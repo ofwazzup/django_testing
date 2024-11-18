@@ -27,9 +27,11 @@ class NoteContentTestCase(TestCase):
         cls.url_edit_note = reverse('notes:edit', args=(cls.note.slug,))
 
     def test_notes_list_visibility_for_users(self):
-        """Проверяет, что:
+        """
+        Проверяет, что:
         1. Автор видит свои заметки в списке.
-        2. Чужие заметки не отображаются в списке другого пользователя."""
+        2. Чужие заметки не отображаются в списке другого пользователя.
+        """
         user_access_cases = (
             (self.author_client, True),  # Автор видит свою заметку
             (self.reader_client, False),  # Читатель не видит чужую заметку
