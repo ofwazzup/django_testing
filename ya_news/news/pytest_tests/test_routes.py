@@ -14,20 +14,14 @@ from pytest_django.asserts import assertRedirects
 )
 @pytest.mark.django_db
 def test_pages_availability_for_anonymous_user(client, url):
-    """
-    Проверяет доступность страниц для анонима:
-    """
-
+    """Проверяет доступность страниц для анонима."""
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
 
 
 @pytest.mark.django_db
 def test_detail_page_availability(url_news_detail, client):
-    """
-    Проверяет доступность страницы новости для анонима.
-    """
-
+    """Проверяет доступность страницы новости для анонима."""
     response = client.get(url_news_detail)
     assert response.status_code == HTTPStatus.OK
 
@@ -47,10 +41,7 @@ def test_detail_page_availability(url_news_detail, client):
     ),
 )
 def test_pages_availability_for_different_users(parametrized_client, url, expected_status):
-    """
-    Проверяет доступность страниц для разных пользователей
-    """
-
+    """Проверяет доступность страниц для разных пользователей."""
     response = parametrized_client.get(url)
     assert response.status_code == expected_status
 
@@ -64,10 +55,7 @@ def test_pages_availability_for_different_users(parametrized_client, url, expect
 )
 @pytest.mark.django_db
 def test_redirects_for_anonymous_user(url, url_user_login, client):
-    """
-    Проверяет редирект для анонимного пользователя
-    """
-
+    """Проверяет редирект для анонимного пользователя."""
     expected_url = f'{url_user_login}?next={url}'
     response = client.get(url)
     assertRedirects(response, expected_url)
