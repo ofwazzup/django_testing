@@ -51,7 +51,7 @@ class RoutesTests(TestCase):
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_authenticated_user_pages(self):
-        """Проверяет доступность страниц для аутентифицированного пользователя."""
+        """Проверяет доступность страниц аутентифицированного пользователя."""
         authenticated_urls = (
             self.url_notes_list,
             self.url_notes_add,
