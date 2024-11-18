@@ -10,7 +10,7 @@ from pytils.translit import slugify
 
 class NoteManagementTestCase(TestCase):
     """Тесты для проверки операций с заметками"""
-    
+
     @classmethod
     def setUpTestData(cls):
         """Инициализация тестовых данных."""
