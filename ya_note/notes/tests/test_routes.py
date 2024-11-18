@@ -38,10 +38,7 @@ class RoutesTests(TestCase):
         cls.url_note_delete = reverse('notes:delete', args=(cls.note.slug,))
 
     def test_public_pages_accessibility(self):
-        """
-        Проверяет доступность страниц для всех пользователей:
-        """
-
+        """Проверяет доступность страниц для всех пользователей."""
         public_urls = (
             self.url_home,
             self.url_login,
@@ -54,10 +51,7 @@ class RoutesTests(TestCase):
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_authenticated_user_pages(self):
-        """
-        Проверяет доступность страниц для аутентифицированного пользователя:
-        """
-
+        """Проверяет доступность страниц для аутентифицированного пользователя."""
         authenticated_urls = (
             self.url_notes_list,
             self.url_notes_add,
@@ -69,10 +63,7 @@ class RoutesTests(TestCase):
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_note_pages_authorization(self):
-        """
-        Проверяет доступ к страницам заметки:
-        """
-
+        """Проверяет доступ к страницам заметки."""
         user_status_pairs = (
             (self.author_client, HTTPStatus.OK),
             (self.reader_client, HTTPStatus.NOT_FOUND),
@@ -89,10 +80,7 @@ class RoutesTests(TestCase):
                     self.assertEqual(response.status_code, expected_status)
 
     def test_anonymous_user_redirects(self):
-        """
-        Проверяет редиректы для неавторизованных пользователей:
-        """
-
+        """Проверяет редиректы для неавторизованных пользователей."""
         protected_urls = (
             self.url_note_detail,
             self.url_note_edit,
