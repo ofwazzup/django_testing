@@ -10,7 +10,6 @@ class NoteContentTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Инициализация тестовых данных."""
-
         cls.author = User.objects.create(username='Автор')
         cls.reader = User.objects.create(username='Читатель')
         cls.author_client = Client()
@@ -28,12 +27,9 @@ class NoteContentTestCase(TestCase):
         cls.url_edit_note = reverse('notes:edit', args=(cls.note.slug,))
 
     def test_notes_list_visibility_for_users(self):
-        """
-        Проверяет, что:
+        """Проверяет, что:
         1. Автор видит свои заметки в списке.
-        2. Чужие заметки не отображаются в списке другого пользователя.
-        """
-
+        2. Чужие заметки не отображаются в списке другого пользователя."""
         user_access_cases = (
             (self.author_client, True),  # Автор видит свою заметку
             (self.reader_client, False),  # Читатель не видит чужую заметку
@@ -46,7 +42,6 @@ class NoteContentTestCase(TestCase):
 
     def test_pages_contain_form(self):
         """Проверяет, что страницы содержат форму."""
-
         urls_to_check = (self.url_add_note, self.url_edit_note)
         for url in urls_to_check:
             with self.subTest(url=url):
