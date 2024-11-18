@@ -10,11 +10,10 @@ from pytils.translit import slugify
 
 class NoteManagementTestCase(TestCase):
     """Тесты для проверки операций с заметками"""
-
+    
     @classmethod
     def setUpTestData(cls):
         """Инициализация тестовых данных."""
-
         cls.author_user = User.objects.create(username='Автор')
         cls.reader_user = User.objects.create(username='Читатель')
         cls.author_client = Client()
@@ -45,7 +44,6 @@ class NoteManagementTestCase(TestCase):
 
     def test_create_note_authenticated_user(self):
         """Авторизованный пользователь может создавать заметки."""
-
         response = self.author_client.post(
             self.url_add_note, data=self.new_note_data
         )
@@ -59,7 +57,6 @@ class NoteManagementTestCase(TestCase):
 
     def test_create_note_anonymous_user(self):
         """Анонимный пользователь не может создавать заметки."""
-
         response = self.client.post(self.url_add_note, data=self.new_note_data)
         expected_redirect_url = f'{self.url_login}?next={self.url_add_note}'
         self.assertRedirects(response, expected_redirect_url)
@@ -67,7 +64,6 @@ class NoteManagementTestCase(TestCase):
 
     def test_create_note_duplicate_slug(self):
         """Нельзя создать заметку с дублирующимся slug."""
-
         self.new_note_data['slug'] = self.existing_note.slug
         response = self.author_client.post(
             self.url_add_note, data=self.new_note_data
