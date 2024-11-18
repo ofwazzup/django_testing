@@ -11,19 +11,13 @@ form_data = {'text': NEW_COMMENT_TEXT}
 
 
 def comments_before_request():
-    """
-    Возвращает количество комментариев перед выполнением запроса.
-    """
-
+    """Возвращает количество комментариев перед выполнением запроса."""
     return Comment.objects.count()
 
 
 @pytest.mark.django_db
 def test_anonymous_user_cant_create_comment(url_news_detail, client):
-    """
-    Проверка, что анонимный пользователь не может создать комментарий.
-    """
-
+    """Проверка, что анонимный пользователь не может создать комментарий."""
     COMMENTS_BEFORE_REQUEST = comments_before_request()
     client.post(url_news_detail, data=form_data)
     comments_count = Comment.objects.count()
@@ -33,10 +27,7 @@ def test_anonymous_user_cant_create_comment(url_news_detail, client):
 
 @pytest.mark.django_db
 def test_user_can_create_comment(url_news_detail, admin_client):
-    """
-    Проверка, что авторизованный пользователь может создать комментарий.
-    """
-
+    """Проверка, что авторизованный пользователь может создать комментарий."""
     COMMENTS_BEFORE_REQUEST = comments_before_request()
     response = admin_client.post(url_news_detail, data=form_data)
     # Проверка редиректа на раздел комментариев
@@ -51,10 +42,7 @@ def test_user_can_create_comment(url_news_detail, admin_client):
 
 @pytest.mark.django_db
 def test_user_cant_use_bad_words(url_news_detail, admin_client):
-    """
-    Проверка отправки запрещенных слов.
-    """
-
+    """Проверка отправки запрещенных слов."""
     COMMENTS_BEFORE_REQUEST = comments_before_request()
     bad_words_data = {'text': f'Текст, {choice(BAD_WORDS)}, еще текст'}
     response = admin_client.post(url_news_detail, data=bad_words_data)
@@ -74,10 +62,7 @@ def test_user_cant_use_bad_words(url_news_detail, admin_client):
 def test_author_can_delete_comment(
     url_comment_delete, url_news_detail, author_client
 ):
-    """
-    Проверка, что автор комментария может его удалить.
-    """
-
+    """Проверка, что автор комментария может его удалить."""
     COMMENTS_BEFORE_REQUEST = comments_before_request()
     response = author_client.delete(url_comment_delete)
     # Проверка редиректа на раздел комментариев после удаления
@@ -91,10 +76,7 @@ def test_author_can_delete_comment(
 def test_user_cant_delete_comment_of_another_user(
     url_comment_delete, admin_client
 ):
-    """
-    Проверка, что пользователь не может удалить чужой комментарий.
-    """
-
+    """Проверка, что пользователь не может удалить чужой комментарий."""
     COMMENTS_BEFORE_REQUEST = comments_before_request()
     response = admin_client.delete(url_comment_delete)
     # Проверка, что возвращается ошибка 404, так как это чужой комментарий
@@ -108,10 +90,7 @@ def test_user_cant_delete_comment_of_another_user(
 def test_author_can_edit_comment(
     url_comment_edit, url_news_detail, comment, author_client
 ):
-    """
-    Проверка, что автор комментария может его редактировать.
-    """
-
+    """Проверка, что автор комментария может его редактировать."""
     response = author_client.post(url_comment_edit, data=form_data)
     # Проверка редиректа на раздел комментариев после редактирования
     assertRedirects(response, f'{url_news_detail}#comments')
@@ -124,10 +103,7 @@ def test_author_can_edit_comment(
 def test_user_cant_edit_comment_of_another_user(
     url_comment_edit, comment, admin_client
 ):
-    """
-    Проверка, что пользователь не может редактировать чужой комментарий.
-    """
-
+    """Проверка, что пользователь не может редактировать чужой комментарий."""
     response = admin_client.post(url_comment_edit, data=form_data)
     # Проверка, что возвращается ошибка 404, так как это чужой комментарий
     assert response.status_code == HTTPStatus.NOT_FOUND
