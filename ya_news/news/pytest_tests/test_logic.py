@@ -50,7 +50,9 @@ def test_user_can_create_comment(url_news_detail, admin_client):
 def test_user_cant_use_bad_words(url_news_detail, admin_client):
     """Проверка отправки запрещенных слов."""
     comments_before = comments_before_request()
-    bad_words_data = {'text': f'Текст, {choice(BAD_WORDS)}, еще текст'}
+    bad_words_data = {
+        'text': f'Текст, {choice(BAD_WORDS)}, еще текст'
+    }
 
     response = admin_client.post(url_news_detail, data=bad_words_data)
     # Проверка, что форма вернула ошибку
@@ -84,7 +86,7 @@ def test_user_cant_delete_comment_of_another_user(url_comment_delete, admin_clie
     comments_before = comments_before_request()
     response = admin_client.delete(url_comment_delete)
 
-    # Проверка, что возвращается ошибка 404,т.к это чужой комментарий
+    # Проверка, что возвращается ошибка 404, т.к это чужой комментарий
     assert response.status_code == HTTPStatus.NOT_FOUND
 
     comments_count = Comment.objects.count()
@@ -110,7 +112,7 @@ def test_user_cant_edit_comment_of_another_user(url_comment_edit, comment, admin
     """Проверка, что пользователь не может редактировать чужой комментарий."""
     response = admin_client.post(url_comment_edit, data=form_data)
 
-    # Проверка, что возвращается ошибка 404,т.к это чужой комментарий
+    # Проверка, что возвращается ошибка 404, т.к это чужой комментарий
     assert response.status_code == HTTPStatus.NOT_FOUND
 
     comment.refresh_from_db()
