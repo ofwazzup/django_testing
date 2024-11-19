@@ -1,8 +1,8 @@
 from django.test import Client, TestCase
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 from notes.models import Note
-from notes.tests.test_routes import User
 
 
 # Функция для получения URL редактирования заметки
