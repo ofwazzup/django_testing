@@ -1,7 +1,12 @@
 from django.test import Client, TestCase
 from django.urls import reverse
+
 from notes.models import Note
-from notes.tests.test_routes import User
+from notes.tests.test_routes import User  # Локальный импорт
+
+URL_NOTES_LIST = reverse('notes:list')
+URL_ADD_NOTE = reverse('notes:add')
+URL_EDIT_NOTE = lambda slug: reverse('notes:edit', args=(slug,))
 
 
 class NoteContentTestCase(TestCase):
@@ -22,9 +27,6 @@ class NoteContentTestCase(TestCase):
             slug='note-slug',
             author=cls.author,
         )
-        cls.url_notes_list = reverse('notes:list')
-        cls.url_add_note = reverse('notes:add')
-        cls.url_edit_note = reverse('notes:edit', args=(cls.note.slug,))
 
     def test_notes_list_visibility_for_users(self):
         """
@@ -33,19 +35,29 @@ class NoteContentTestCase(TestCase):
         2. Чужие заметки не отображаются в списке другого пользователя.
         """
         user_access_cases = (
-            (self.author_client, True),  # Автор видит свою заметку
-            (self.reader_client, False),  # Читатель не видит чужую заметку
+            (self.author_client, True),
+            (self.reader_client, False),
         )
+
         for client, should_see in user_access_cases:
             with self.subTest(client=client):
-                response = client.get(self.url_notes_list)
+                response = client.get(URL_NOTES_LIST)
                 object_list = response.context['object_list']
                 self.assertEqual(self.note in object_list, should_see)
 
     def test_pages_contain_form(self):
-        """Проверяет, что страницы содержат форму."""
-        urls_to_check = (self.url_add_note, self.url_edit_note)
-        for url in urls_to_check:
+        """Проверяет, что страницы содержат форму правильного типа."""
+        urls_to_check = {
+            URL_ADD_NOTE: 'notes.forms.NoteForm',
+            URL_EDIT_NOTE(self.note.slug): 'notes.forms.NoteForm',
+        }
+
+        for url, form_class in urls_to_check.items():
             with self.subTest(url=url):
                 response = self.author_client.get(url)
                 self.assertIn('form', response.context)
+                self.assertEqual(
+                    response.context['form'].__class__.__module__ + '.' + response.context['form'].__class__.__name__,
+                    form_class,
+                    msg=f"На странице {url} ожидалась форма типа {form_class}."
+                )
