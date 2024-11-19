@@ -40,7 +40,7 @@ class RoutesTests(TestCase):
 
     def test_public_and_authenticated_accessibility(self):
         """
-        Проверка кодов возврата 
+        Проверка кодов возврата
         для публичных и аутентифицированных пользователей.
         """
         public_urls = [URL_HOME, URL_LOGIN, URL_LOGOUT, URL_SIGNUP]
