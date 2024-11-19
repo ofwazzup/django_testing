@@ -41,7 +41,9 @@ def test_detail_page_availability(url_news_detail, client):
         pytest.lazy_fixture('url_comment_delete'),
     ),
 )
-def test_pages_availability_for_different_users(parametrized_client, url, expected_status):
+def test_pages_availability_for_different_users(
+    parametrized_client, url, expected_status
+):
     """Проверяет доступность страниц для разных пользователей."""
     response = parametrized_client.get(url)
     assert response.status_code == expected_status
