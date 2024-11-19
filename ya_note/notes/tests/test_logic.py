@@ -2,12 +2,12 @@ from http import HTTPStatus
 
 from django.test import Client, TestCase
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 from pytils.translit import slugify
 
 from notes.forms import WARNING
 from notes.models import Note
-from notes.tests.test_routes import User
 
 URL_ADD_NOTE = reverse('notes:add')
 URL_LOGIN = reverse('users:login')
