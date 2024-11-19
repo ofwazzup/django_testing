@@ -63,8 +63,7 @@ class NoteContentTestCase(TestCase):
                 response = self.author_client.get(url)
                 self.assertIn('form', response.context)
                 form_class_str = (
-                    response.context['form'].__class__.__module__ +
-                    '.' +
+                    response.context['form'].__class__.__module__ + '.' +
                     response.context['form'].__class__.__name__
                 )
                 self.assertEqual(
