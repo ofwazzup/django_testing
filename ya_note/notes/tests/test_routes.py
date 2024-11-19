@@ -39,7 +39,10 @@ class RoutesTests(TestCase):
         cls.url_note_delete = reverse('notes:delete', args=(cls.note.slug,))
 
     def test_public_and_authenticated_accessibility(self):
-        """Проверка кодов возврата для публичных и аутентифицированных пользователей."""
+        """
+        Проверка кодов возврата 
+        для публичных и аутентифицированных пользователей.
+        """
         public_urls = [URL_HOME, URL_LOGIN, URL_LOGOUT, URL_SIGNUP]
         authenticated_urls = [URL_NOTES_LIST, URL_NOTES_ADD, URL_NOTES_SUCCESS]
 
@@ -74,7 +77,9 @@ class RoutesTests(TestCase):
                 self.assertRedirects(response, redirect_url)
 
         # Проверка доступа для авторизованных пользователей
-        restricted_urls = [self.url_note_detail, self.url_note_edit, self.url_note_delete]
+        restricted_urls = [
+            self.url_note_detail, self.url_note_edit, self.url_note_delete
+        ]
         user_status_pairs = [
             (self.author_client, HTTPStatus.OK),
             (self.reader_client, HTTPStatus.NOT_FOUND),
