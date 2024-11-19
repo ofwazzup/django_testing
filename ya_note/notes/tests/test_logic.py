@@ -49,7 +49,9 @@ class NoteManagementTestCase(TestCase):
 
     def test_create_note_authenticated_user(self):
         """Авторизованный пользователь может создавать заметки."""
-        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
         created_note = Note.objects.latest('id')
@@ -68,7 +70,9 @@ class NoteManagementTestCase(TestCase):
     def test_create_note_duplicate_slug(self):
         """Нельзя создать заметку с дублирующимся slug."""
         self.new_note_data['slug'] = self.existing_note.slug
-        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         self.assertFormError(
             response,
             'form',
@@ -80,7 +84,9 @@ class NoteManagementTestCase(TestCase):
     def test_create_note_empty_slug(self):
         """Если slug не указан, он генерируется автоматически."""
         self.new_note_data.pop('slug')
-        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
         created_note = Note.objects.latest('id')
