@@ -2,7 +2,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from notes.models import Note
-from notes.tests.test_routes import User  # Локальный импорт
+from notes.tests.test_routes import User
 
 URL_NOTES_LIST = reverse('notes:list')
 URL_ADD_NOTE = reverse('notes:add')
