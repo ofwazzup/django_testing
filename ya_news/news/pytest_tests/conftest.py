@@ -5,6 +5,7 @@ import pytest
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
+
 from news.models import Comment, News
 
 COMMENT_TEXT = 'Текст комментария'
@@ -23,49 +24,43 @@ def author_client(author, client):
 
 @pytest.fixture
 def news():
-    news = News.objects.create(
+    return News.objects.create(
         title='Заголовок',
         text='Текст заметки',
     )
-    return news
 
 
 @pytest.fixture
 def eleven_news():
     today = datetime.today()
-    all_news = []
-    for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1):
-        one_news = News(
+    all_news = [
+        News(
             title=f'Новость {index}',
             text='Просто текст.',
             date=today - timedelta(days=index),
         )
-        all_news.append(one_news)
+        for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1)
+    ]
     News.objects.bulk_create(all_news)
 
 
 @pytest.fixture
 def comment(news, author):
-    comment = Comment.objects.create(
+    return Comment.objects.create(
         news=news,
         author=author,
         text=COMMENT_TEXT,
     )
-    return comment
 
 
 @pytest.fixture
 def news_with_ten_comments(news, author):
-    start_date = timezone.now()
-    end_date = start_date + timedelta(days=10)
     for index in range(10):
-        comment = Comment.objects.create(
-            news=news, author=author, text=f'Tекст {index}',
+        Comment.objects.create(
+            news=news,
+            author=author,
+            text=f'Текст {index}',
         )
-        comment.created = (
-            start_date + (end_date - start_date) * random.random()
-        )
-        comment.save()
     return news
 
 
