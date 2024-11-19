@@ -1,7 +1,9 @@
 from http import HTTPStatus
+
 import pytest
 from pytest_django.asserts import assertRedirects
 
+pytestmark = pytest.mark.django_db
 
 @pytest.mark.parametrize(
     'url',
@@ -12,14 +14,12 @@ from pytest_django.asserts import assertRedirects
         pytest.lazy_fixture('url_user_signup'),  # Страница регистрации
     )
 )
-@pytest.mark.django_db
 def test_pages_availability_for_anonymous_user(client, url):
     """Проверяет доступность страниц для анонима."""
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
 
 
-@pytest.mark.django_db
 def test_detail_page_availability(url_news_detail, client):
     """Проверяет доступность страницы новости для анонима."""
     response = client.get(url_news_detail)
@@ -36,13 +36,11 @@ def test_detail_page_availability(url_news_detail, client):
 @pytest.mark.parametrize(
     'url',
     (
-        pytest.lazy_fixture('url_comment_edit'),  # Редактирование комментария
-        pytest.lazy_fixture('url_comment_delete'),  # Удаление комментария
+        pytest.lazy_fixture('url_comment_edit'),
+        pytest.lazy_fixture('url_comment_delete'),
     ),
 )
-def test_pages_availability_for_different_users(
-    parametrized_client, url, expected_status
-):
+def test_pages_availability_for_different_users(parametrized_client, url, expected_status):
     """Проверяет доступность страниц для разных пользователей."""
     response = parametrized_client.get(url)
     assert response.status_code == expected_status
@@ -51,11 +49,10 @@ def test_pages_availability_for_different_users(
 @pytest.mark.parametrize(
     'url',
     (
-        pytest.lazy_fixture('url_comment_edit'),  # Редактирование комментария
-        pytest.lazy_fixture('url_comment_delete'),  # Удаление комментария
+        pytest.lazy_fixture('url_comment_edit'),
+        pytest.lazy_fixture('url_comment_delete'),
     ),
 )
-@pytest.mark.django_db
 def test_redirects_for_anonymous_user(url, url_user_login, client):
     """Проверяет редирект для анонимного пользователя."""
     expected_url = f'{url_user_login}?next={url}'
