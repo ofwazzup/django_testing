@@ -4,13 +4,16 @@ from django.urls import reverse
 from notes.models import Note
 from notes.tests.test_routes import User
 
+
 # Функция для получения URL редактирования заметки
 def get_edit_url(slug):
     return reverse('notes:edit', args=(slug,))
 
+
 URL_NOTES_LIST = reverse('notes:list')
 URL_ADD_NOTE = reverse('notes:add')
 URL_EDIT_NOTE = get_edit_url
+
 
 class NoteContentTestCase(TestCase):
     """Тесты для проверки контента и форм на страницах приложения."""
@@ -67,4 +70,3 @@ class NoteContentTestCase(TestCase):
                     form_class_str, form_class,
                     msg=f"На странице {url} ожидалась форма типа {form_class}."
                 )
-
