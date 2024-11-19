@@ -5,9 +5,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_news_count(eleven_news, url_news_home, client):
-    """
-    Проверка, что на главной странице выводится не более 10 новостей.
-    """
+    """Проверка глав страницы вывода не более 10 новостей."""
     response = client.get(url_news_home)
     object_list = response.context['object_list']
     news_count = len(object_list)
@@ -15,7 +13,7 @@ def test_news_count(eleven_news, url_news_home, client):
 
 
 def test_news_order(eleven_news, url_news_home, client):
-    """Проверка, сортировки от самой свежей к самой старой."""
+    """Проверка сортировки от самой свежей к самой старой."""
     response = client.get(url_news_home)
     object_list = response.context['object_list']
     all_dates = [news.date for news in object_list]
