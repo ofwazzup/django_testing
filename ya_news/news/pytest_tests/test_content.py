@@ -5,7 +5,9 @@ pytestmark = pytest.mark.django_db
 
 
 def test_news_count(eleven_news, url_news_home, client):
-    """Проверка, что на главной странице выводится не более 10 новостей."""
+    """
+    Проверка, что на главной странице выводится не более 10 новостей.
+    """
     response = client.get(url_news_home)
     object_list = response.context['object_list']
     news_count = len(object_list)
@@ -29,7 +31,9 @@ def test_comments_order(news_with_ten_comments, url_news_detail, client):
     all_comments = news.comment_set.all()
 
     created_list = [comment.created for comment in all_comments]
-    assert created_list == sorted(created_list), 'Комментарии отсортированы неправильно'
+    assert created_list == sorted(created_list), (
+        'Комментарии отсортированы неправильно'
+    )
 
 
 def test_anonymous_client_has_no_form(url_news_detail, client):
