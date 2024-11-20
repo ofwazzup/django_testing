@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from django.test import TestCase
+from django.test import TestCase  # Импортирован TestCase
 from django.urls import reverse
 from pytils.translit import slugify
 
