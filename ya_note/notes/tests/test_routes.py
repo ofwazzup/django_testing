@@ -25,7 +25,6 @@ class RoutesTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        # Используем setUpTestData из test_utils
         setUpTestData(cls)
 
     def test_public_and_authenticated_accessibility(self):
