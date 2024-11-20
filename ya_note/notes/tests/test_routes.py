@@ -1,9 +1,5 @@
 from http import HTTPStatus
-
-from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
 from django.urls import reverse
-from notes.models import Note
 
 from test_utils import setUpTestData
 
@@ -29,7 +25,6 @@ class RoutesTests(TestCase):
 
     def test_public_and_authenticated_accessibility(self):
         """Проверка кодов возврата для публичных и аутентифицированных пользователей."""
-
         public_urls = [URL_HOME, URL_LOGIN, URL_LOGOUT, URL_SIGNUP]
         authenticated_urls = [URL_NOTES_LIST, URL_NOTES_ADD, URL_NOTES_SUCCESS]
 
@@ -43,7 +38,6 @@ class RoutesTests(TestCase):
 
     def test_protected_pages_redirect_and_authorization(self):
         """Проверка редиректов и доступа к защищенным страницам."""
-
         protected_urls = [
             URL_NOTE_DETAIL,
             URL_NOTE_EDIT,
