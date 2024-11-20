@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from django.test import TestCase
 from django.urls import reverse
-from .test_utils import setUpTestData
+from .test_utils import BaseNoteTestCase
 from django.contrib.auth import get_user_model
 
 # Константы для URL
@@ -12,17 +12,22 @@ URL_SIGNUP = reverse('users:signup')
 URL_NOTES_LIST = reverse('notes:list')
 URL_NOTES_ADD = reverse('notes:add')
 URL_NOTES_SUCCESS = reverse('notes:success')
-URL_NOTE_DETAIL = reverse('notes:detail', args=('sample-slug',))
-URL_NOTE_EDIT = reverse('notes:edit', args=('sample-slug',))
-URL_NOTE_DELETE = reverse('notes:delete', args=('sample-slug',))
+URL_NOTE_DETAIL = reverse(
+    'notes:detail', args=('sample-slug',)
+)
+URL_NOTE_EDIT = reverse(
+    'notes:edit', args=('sample-slug',)
+)
+URL_NOTE_DELETE = reverse(
+    'notes:delete', args=('sample-slug',)
+)
 
-
-class RoutesTests(TestCase):
+class RoutesTests(BaseNoteTestCase):
     """Тесты для проверки маршрутов."""
 
     @classmethod
     def setUpTestData(cls):
-        setUpTestData(cls)
+        super().setUpTestData()
         cls.user = get_user_model().objects.create_user(
             username='testuser', password='password'
         )
@@ -36,7 +41,7 @@ class RoutesTests(TestCase):
             URL_NOTES_LIST, URL_NOTES_ADD, URL_NOTES_SUCCESS
         ]
 
-        # Проверка пуб страниц и страниц для аутентифицированных пользователей
+        # Проверка пуб страниц и страниц для аут пользователей
         for url in public_urls + authenticated_urls:
             with self.subTest(url=url):
                 # Если URL для публичных страниц
@@ -50,7 +55,9 @@ class RoutesTests(TestCase):
                     client = self.client
 
                 response = client.get(url)
-                self.assertEqual(response.status_code, HTTPStatus.OK)
+                self.assertEqual(
+                    response.status_code, HTTPStatus.OK
+                )
 
     def test_protected_pages_redirect_and_authorization(self):
         """Проверка редиректов и доступа к защищенным страницам."""
