@@ -1,17 +1,15 @@
 from http import HTTPStatus
-
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
-
 from pytils.translit import slugify
-
 from notes.forms import WARNING
 from notes.models import Note
 
 URL_ADD_NOTE = reverse('notes:add')
 URL_LOGIN = reverse('users:login')
 URL_SUCCESS_PAGE = reverse('notes:success')
+SLUG = 'note-slug'
 
 
 class NoteManagementTestCase(TestCase):
@@ -29,7 +27,7 @@ class NoteManagementTestCase(TestCase):
         cls.existing_note = Note.objects.create(
             title='Заголовок',
             text='Текст заметки',
-            slug='note-slug',
+            slug=SLUG,  # Использование константы
             author=cls.author_user,
         )
         cls.new_note_data = {
@@ -69,7 +67,7 @@ class NoteManagementTestCase(TestCase):
 
     def test_create_note_duplicate_slug(self):
         """Нельзя создать заметку с дублирующимся slug."""
-        self.new_note_data['slug'] = self.existing_note.slug
+        self.new_note_data['slug'] = SLUG  # Использование константы
         response = self.author_client.post(
             URL_ADD_NOTE, data=self.new_note_data
         )
@@ -77,7 +75,7 @@ class NoteManagementTestCase(TestCase):
             response,
             'form',
             'slug',
-            errors=(self.existing_note.slug + WARNING),
+            errors=(SLUG + WARNING),
         )
         self.assertEqual(Note.objects.count(), self.initial_note_count)
 
