@@ -1,14 +1,24 @@
-from django.test import Client
+from django.test import Client, TestCase
+from django.urls import reverse
 from django.contrib.auth.models import User
+
 from notes.models import Note
 
+URL_NOTES_LIST = reverse('notes:list')
+URL_ADD_NOTE = reverse('notes:add')
 
-class TestDataMixin:
-    """Миксин для инициализации тестовых данных."""
+
+def get_edit_url(slug):
+    """Функция для получения URL редактирования заметки."""
+    return reverse('notes:edit', args=(slug,))
+
+
+class BaseNoteTestCase(TestCase):
+    """Базовый класс для тестов приложения Notes."""
 
     @classmethod
     def setUpTestData(cls):
-        """Инициализация тестовых данных."""
+        """Инициализация общих тестовых данных."""
         cls.author = User.objects.create(username='Автор')
         cls.reader = User.objects.create(username='Читатель')
         cls.author_client = Client()
