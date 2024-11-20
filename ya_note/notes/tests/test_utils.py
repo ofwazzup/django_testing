@@ -7,7 +7,8 @@ URL_ADD_NOTE = reverse('notes:add')
 URL_LOGIN = reverse('users:login')
 URL_SUCCESS_PAGE = reverse('notes:success')
 SLUG = 'note-slug'
-URL_NOTES_LIST = reverse('notes:list') 
+URL_NOTES_LIST = reverse('notes:list')
+
 
 # Функция для получения URL редактирования заметки
 def get_edit_url(slug):
