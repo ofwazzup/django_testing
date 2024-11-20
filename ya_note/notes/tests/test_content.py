@@ -1,8 +1,7 @@
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
-
-from notes.models import Note
+from test_setup import TestDataMixin
+from notes.forms import NoteForm
 
 
 # Функция для получения URL редактирования заметки
@@ -15,24 +14,8 @@ URL_ADD_NOTE = reverse('notes:add')
 URL_EDIT_NOTE = get_edit_url
 
 
-class NoteContentTestCase(TestCase):
+class NoteContentTestCase(TestDataMixin, TestCase):
     """Тесты для проверки контента и форм на страницах приложения."""
-
-    @classmethod
-    def setUpTestData(cls):
-        """Инициализация тестовых данных."""
-        cls.author = User.objects.create(username='Автор')
-        cls.reader = User.objects.create(username='Читатель')
-        cls.author_client = Client()
-        cls.reader_client = Client()
-        cls.author_client.force_login(cls.author)
-        cls.reader_client.force_login(cls.reader)
-        cls.note = Note.objects.create(
-            title='Заголовок',
-            text='Текст заметки',
-            slug='note-slug',
-            author=cls.author,
-        )
 
     def test_notes_list_visibility_for_users(self):
         """
@@ -54,20 +37,16 @@ class NoteContentTestCase(TestCase):
     def test_pages_contain_form(self):
         """Проверяет, что страницы содержат форму правильного типа."""
         urls_to_check = {
-            URL_ADD_NOTE: 'notes.forms.NoteForm',
-            URL_EDIT_NOTE(self.note.slug): 'notes.forms.NoteForm',
+            URL_ADD_NOTE: NoteForm,
+            URL_EDIT_NOTE(self.note.slug): NoteForm,
         }
 
         for url, form_class in urls_to_check.items():
             with self.subTest(url=url):
                 response = self.author_client.get(url)
                 self.assertIn('form', response.context)
-                form_class_str = (
-                    response.context['form'].__class__.__module__
-                    + '.'
-                    + response.context['form'].__class__.__name__
-                )
-                self.assertEqual(
-                    form_class_str, form_class,
+                self.assertIsInstance(
+                    response.context['form'],
+                    form_class,
                     msg=f"На странице {url} ожидалась форма типа {form_class}."
                 )
