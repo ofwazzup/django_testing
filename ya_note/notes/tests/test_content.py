@@ -6,6 +6,7 @@ from .base import (
 )
 from notes.forms import NoteForm
 
+
 class NoteContentTestCase(BaseNoteTestCase):
     """Тесты для проверки контента и форм на страницах приложения."""
 
