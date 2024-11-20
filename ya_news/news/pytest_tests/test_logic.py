@@ -32,7 +32,7 @@ def test_anonymous_user_cant_create_comment(url_news_detail, client):
 def test_user_can_create_comment(url_news_detail, admin_client):
     """Проверка, что авторизованный пользователь может создать комментарий."""
     comments_before = comments_before_request()
-    response = admin_client.post(url_news_detail, data=form_data)
+    admin_client.post(url_news_detail, data=form_data)
 
     comments_count = Comment.objects.count()
 
@@ -47,7 +47,7 @@ def test_user_can_create_comment(url_news_detail, admin_client):
     # Проверка, что автор тот, кто создал
     assert new_comment.author == admin_client.user
 
-    # Проверка, что комментарий связан с нужной новостью
+    # Проверка, что коммент связан с нужной новостью
     assert new_comment.news is not None
 
 
