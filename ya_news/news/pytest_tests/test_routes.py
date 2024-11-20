@@ -1,5 +1,4 @@
 from http import HTTPStatus
-
 import pytest
 from pytest_django.asserts import assertRedirects
 
@@ -7,7 +6,7 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.mark.parametrize(
-    'url_fixture, client_fixture, expected_status',
+    'url, client_fixture, expected_status',
     (
         (pytest.lazy_fixture('url_news_home'), 'client', HTTPStatus.OK),
         (pytest.lazy_fixture('url_user_login'), 'client', HTTPStatus.OK),
@@ -33,34 +32,34 @@ pytestmark = pytest.mark.django_db
     )
 )
 def test_page_status_codes(
-    url_fixture, client_fixture, expected_status, request
+    url, client_fixture, expected_status, request
 ):
-    """Проверяет код ответа для различных страниц и пользователей."""
-    url = request.getfixturevalue(url_fixture)
+    """Проверяет код ответа для всех страниц и пользователей."""
     client = request.getfixturevalue(client_fixture)
     response = client.get(url)
     assert response.status_code == expected_status
 
 
 @pytest.mark.parametrize(
-    'url_fixture, login_url_fixture',
+    'url, expected_redirect_url',
     (
         (
             pytest.lazy_fixture('url_comment_edit'),
-            pytest.lazy_fixture('url_user_login')
+            pytest.lazy_fixture(
+                'url_user_login'
+            ) + '?next=' + pytest.lazy_fixture('url_comment_edit')
         ),
         (
             pytest.lazy_fixture('url_comment_delete'),
-            pytest.lazy_fixture('url_user_login')
+            pytest.lazy_fixture(
+                'url_user_login'
+            ) + '?next=' + pytest.lazy_fixture('url_comment_delete')
         ),
     )
 )
 def test_redirects_for_anonymous_user(
-    url_fixture, login_url_fixture, client, request
+    url, expected_redirect_url, client
 ):
     """Проверяет редирект для анонимного пользователя."""
-    url = request.getfixturevalue(url_fixture)
-    login_url = request.getfixturevalue(login_url_fixture)
-    expected_url = f'{login_url}?next={url}'
     response = client.get(url)
-    assertRedirects(response, expected_url)
+    assertRedirects(response, expected_redirect_url)
