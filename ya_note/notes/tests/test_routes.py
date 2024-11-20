@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from django.test import TestCase
 from django.urls import reverse
 from .test_utils import BaseNoteTestCase
 from django.contrib.auth import get_user_model
@@ -21,6 +20,7 @@ URL_NOTE_EDIT = reverse(
 URL_NOTE_DELETE = reverse(
     'notes:delete', args=('sample-slug',)
 )
+
 
 class RoutesTests(BaseNoteTestCase):
     """Тесты для проверки маршрутов."""
