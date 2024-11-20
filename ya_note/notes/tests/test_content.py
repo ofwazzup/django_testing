@@ -1,16 +1,19 @@
-from django.forms import ModelForm
+from .base import (
+    BaseNoteTestCase,
+    URL_NOTES_LIST,
+    URL_ADD_NOTE,
+    get_edit_url,
+)
 from notes.forms import NoteForm
-from .test_utils import BaseNoteTestCase, URL_NOTES_LIST, URL_ADD_NOTE, get_edit_url
-
 
 class NoteContentTestCase(BaseNoteTestCase):
     """Тесты для проверки контента и форм на страницах приложения."""
 
     def test_notes_list_visibility_for_users(self):
-        """
-        Проверяет, что:
-        1. Автор видит свои заметки в списке.
-        2. Чужие заметки не отображаются в списке другого пользователя.
+        """ 
+        Проверяет, что: 
+        1. Автор видит свои заметки в списке. 
+        2. Чужие заметки не отображаются в списке другого пользователя. 
         """
         user_access_cases = (
             (self.author_client, True),
@@ -35,7 +38,5 @@ class NoteContentTestCase(BaseNoteTestCase):
                 response = self.author_client.get(url)
                 self.assertIn('form', response.context)
                 self.assertIsInstance(
-                    response.context['form'],
-                    form_class,
-                    msg=f"На странице {url} ожидалась форма типа {form_class.__name__}."
+                    response.context['form'], form_class
                 )
