@@ -69,7 +69,9 @@ def test_user_cant_use_bad_words(url_news_detail, admin_client):
     assert comments_count == comments_before
 
 
-def test_author_can_delete_comment(url_comment_delete, comment, author_client):
+def test_author_can_delete_comment(
+    url_comment_delete, comment, author_client
+):
     """Проверка, что автор комментария может его удалить."""
     comment_id = comment.id
     author_client.delete(url_comment_delete)
@@ -106,7 +108,9 @@ def test_author_can_edit_comment(url_comment_edit, comment, author_client):
     assert comment.created is not None
 
 
-def test_user_cant_edit_comment_of_another_user(url_comment_edit, comment, admin_client):
+def test_user_cant_edit_comment_of_another_user(
+    url_comment_edit, comment, admin_client
+):
     """Проверка, что пользователь не может редактировать чужой комментарий."""
     response = admin_client.post(url_comment_edit, data=form_data)
 
