@@ -1,8 +1,8 @@
 from http import HTTPStatus
 from django.test import TestCase
 from django.urls import reverse
-
 from test_utils import setUpTestData
+from django.contrib.auth import get_user_model
 
 # Константы для URL
 URL_HOME = reverse('notes:home')
@@ -16,16 +16,18 @@ URL_NOTE_DETAIL = reverse('notes:detail', args=('sample-slug',))
 URL_NOTE_EDIT = reverse('notes:edit', args=('sample-slug',))
 URL_NOTE_DELETE = reverse('notes:delete', args=('sample-slug',))
 
-
 class RoutesTests(TestCase):
     """Тесты для проверки маршрутов."""
 
     @classmethod
     def setUpTestData(cls):
         setUpTestData(cls)
+        cls.user = get_user_model().objects.create_user(
+            username='testuser', password='password'
+        )
 
     def test_public_and_authenticated_accessibility(self):
-        """Проверка кодов возврата для пуб и аут пользователей."""
+        """Проверка кодов возврата для публичных и аутентифицированных пользователей."""
         public_urls = [
             URL_HOME, URL_LOGIN, URL_LOGOUT, URL_SIGNUP
         ]
@@ -33,14 +35,17 @@ class RoutesTests(TestCase):
             URL_NOTES_LIST, URL_NOTES_ADD, URL_NOTES_SUCCESS
         ]
 
-        # Проверка пуб страниц и страниц для аут пользователей
+        # Проверка публичных страниц и страниц для аутентифицированных пользователей
         for url in public_urls + authenticated_urls:
             with self.subTest(url=url):
                 # Выбор клиента для аутентифицированных пользователей
                 if url in public_urls:
                     client = self.client
                 else:
-                    client = self.reader_client
+                    self.client.login(
+                        username='testuser', password='password'
+                    )
+                    client = self.client
 
                 response = client.get(url)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
