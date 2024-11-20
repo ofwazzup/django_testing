@@ -41,7 +41,7 @@ class RoutesTests(TestCase):
                     client = self.client
                 else:
                     client = self.reader_client
-                
+
                 response = client.get(url)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
