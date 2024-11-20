@@ -7,7 +7,7 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.mark.parametrize(
-    'url, client_fixture, expected_status',
+    'url_fixture, client_fixture, expected_status',
     (
         (pytest.lazy_fixture('url_news_home'), 'client', HTTPStatus.OK),
         (pytest.lazy_fixture('url_user_login'), 'client', HTTPStatus.OK),
@@ -32,15 +32,18 @@ pytestmark = pytest.mark.django_db
         ),
     )
 )
-def test_page_status_codes(url, client_fixture, expected_status, request):
+def test_page_status_codes(
+    url_fixture, client_fixture, expected_status, request
+):
     """Проверяет код ответа для различных страниц и пользователей."""
+    url = request.getfixturevalue(url_fixture)
     client = request.getfixturevalue(client_fixture)
     response = client.get(url)
     assert response.status_code == expected_status
 
 
 @pytest.mark.parametrize(
-    'url, url_user_login',
+    'url_fixture, login_url_fixture',
     (
         (
             pytest.lazy_fixture('url_comment_edit'),
@@ -52,8 +55,12 @@ def test_page_status_codes(url, client_fixture, expected_status, request):
         ),
     )
 )
-def test_redirects_for_anonymous_user(url, url_user_login, client):
+def test_redirects_for_anonymous_user(
+    url_fixture, login_url_fixture, client, request
+):
     """Проверяет редирект для анонимного пользователя."""
-    expected_url = f'{url_user_login}?next={url}'
+    url = request.getfixturevalue(url_fixture)
+    login_url = request.getfixturevalue(login_url_fixture)
+    expected_url = f'{login_url}?next={url}'
     response = client.get(url)
     assertRedirects(response, expected_url)
