@@ -33,8 +33,14 @@ def test_page_status_codes(url, client, expected_status):
 @pytest.mark.parametrize(
     'url, url_user_login',
     (
-        (pytest.lazy_fixture('url_comment_edit'), pytest.lazy_fixture('url_user_login')),
-        (pytest.lazy_fixture('url_comment_delete'), pytest.lazy_fixture('url_user_login')),
+        (
+            pytest.lazy_fixture('url_comment_edit'),
+            pytest.lazy_fixture('url_user_login')
+        ),
+        (
+            pytest.lazy_fixture('url_comment_delete'),
+            pytest.lazy_fixture('url_user_login')
+        ),
     )
 )
 def test_redirects_for_anonymous_user(url, url_user_login, client):
