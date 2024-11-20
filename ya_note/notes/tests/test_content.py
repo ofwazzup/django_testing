@@ -1,20 +1,9 @@
-from django.test import TestCase
-from django.urls import reverse
-from test_setup import TestDataMixin
+from django.forms import ModelForm
 from notes.forms import NoteForm
+from .test_utils import BaseNoteTestCase, URL_NOTES_LIST, URL_ADD_NOTE, get_edit_url
 
 
-# Функция для получения URL редактирования заметки
-def get_edit_url(slug):
-    return reverse('notes:edit', args=(slug,))
-
-
-URL_NOTES_LIST = reverse('notes:list')
-URL_ADD_NOTE = reverse('notes:add')
-URL_EDIT_NOTE = get_edit_url
-
-
-class NoteContentTestCase(TestDataMixin, TestCase):
+class NoteContentTestCase(BaseNoteTestCase):
     """Тесты для проверки контента и форм на страницах приложения."""
 
     def test_notes_list_visibility_for_users(self):
@@ -38,7 +27,7 @@ class NoteContentTestCase(TestDataMixin, TestCase):
         """Проверяет, что страницы содержат форму правильного типа."""
         urls_to_check = {
             URL_ADD_NOTE: NoteForm,
-            URL_EDIT_NOTE(self.note.slug): NoteForm,
+            get_edit_url(self.note.slug): NoteForm,
         }
 
         for url, form_class in urls_to_check.items():
@@ -48,5 +37,5 @@ class NoteContentTestCase(TestDataMixin, TestCase):
                 self.assertIsInstance(
                     response.context['form'],
                     form_class,
-                    msg=f"На странице {url} ожидалась форма типа {form_class}."
+                    msg=f"На странице {url} ожидалась форма типа {form_class.__name__}."
                 )
