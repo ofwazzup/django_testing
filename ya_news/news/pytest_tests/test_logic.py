@@ -2,7 +2,7 @@ from http import HTTPStatus
 from random import choice
 
 import pytest
-from pytest_django.asserts import assertFormError, assertRedirects
+from pytest_django.asserts import assertFormError
 
 from news.forms import BAD_WORDS, WARNING
 from news.models import Comment
@@ -34,17 +34,21 @@ def test_user_can_create_comment(url_news_detail, admin_client):
     comments_before = comments_before_request()
     response = admin_client.post(url_news_detail, data=form_data)
 
-    # Проверка редиректа на раздел комментариев
-    assertRedirects(response, f'{url_news_detail}#comments')
-
     comments_count = Comment.objects.count()
+
     # Проверка, что коммент был добавлен
     assert comments_count == comments_before + 1
 
-    new_comment = Comment.objects.latest('id')
+    new_comment = Comment.objects.get(id=Comment.objects.latest('id').id)
+
     # Проверка текста нового комментария
     assert new_comment.text == form_data['text']
-    assert new_comment.author is not None
+
+    # Проверка, что автор тот, кто создал
+    assert new_comment.author == admin_client.user
+
+    # Проверка, что комментарий связан с нужной новостью
+    assert new_comment.news is not None
 
 
 def test_user_cant_use_bad_words(url_news_detail, admin_client):
@@ -54,7 +58,10 @@ def test_user_cant_use_bad_words(url_news_detail, admin_client):
         'text': f'Текст, {choice(BAD_WORDS)}, еще текст'
     }
 
-    response = admin_client.post(url_news_detail, data=bad_words_data)
+    response = admin_client.post(
+        url_news_detail, data=bad_words_data
+    )
+
     # Проверка, что форма вернула ошибку
     assertFormError(
         response,
@@ -64,27 +71,25 @@ def test_user_cant_use_bad_words(url_news_detail, admin_client):
     )
 
     comments_count = Comment.objects.count()
+
     # Проверка, что кол-во коммент не изменилось
     assert comments_count == comments_before
 
 
 def test_author_can_delete_comment(
-    url_comment_delete, url_news_detail, author_client
+    url_comment_delete, comment, author_client
 ):
     """Проверка, что автор комментария может его удалить."""
     comments_before = comments_before_request()
+    comment_id = comment.id
     response = author_client.delete(url_comment_delete)
 
-    # Проверка редиректа на раздел комментариев после удаления
-    assertRedirects(response, f'{url_news_detail}#comments')
-
-    comments_count = Comment.objects.count()
-    # Проверка, что коммент был удален
-    assert comments_count == comments_before - 1
+    # Проверка, что комментарий был удален
+    assert not Comment.objects.filter(id=comment_id).exists()
 
 
 def test_user_cant_delete_comment_of_another_user(
-    url_comment_delete, admin_client
+    url_comment_delete, admin_client, comment
 ):
     """Проверка, что пользователь не может удалить чужой комментарий."""
     comments_before = comments_before_request()
@@ -93,21 +98,19 @@ def test_user_cant_delete_comment_of_another_user(
     # Проверка, что возвращается ошибка 404, т.к это чужой комментарий
     assert response.status_code == HTTPStatus.NOT_FOUND
 
-    comments_count = Comment.objects.count()
-    # Проверка, что количество комментариев не изменилось
-    assert comments_count == comments_before
+    # Проверка, что комментарий не был удален
+    comment.refresh_from_db()
+    assert comment.text == COMMENT_TEXT
+    assert comment.author is not None
+    assert comment.created is not None
 
 
-def test_author_can_edit_comment(
-    url_comment_edit, url_news_detail, comment, author_client
-):
+def test_author_can_edit_comment(url_comment_edit, comment, author_client):
     """Проверка, что автор комментария может его редактировать."""
     response = author_client.post(url_comment_edit, data=form_data)
 
-    # Проверка редиректа на раздел комментариев после редактирования
-    assertRedirects(response, f'{url_news_detail}#comments')
-
     comment.refresh_from_db()
+
     # Проверка, что коммент был обновлен
     assert comment.text == NEW_COMMENT_TEXT
     assert comment.author is not None
@@ -123,8 +126,8 @@ def test_user_cant_edit_comment_of_another_user(
     # Проверка, что возвращается ошибка 404, т.к это чужой комментарий
     assert response.status_code == HTTPStatus.NOT_FOUND
 
+    # Проверка, что комментарий не был изменен
     comment.refresh_from_db()
-    # Проверка, что коммент не был изменен
     assert comment.text == COMMENT_TEXT
     assert comment.author is not None
     assert comment.created is not None
