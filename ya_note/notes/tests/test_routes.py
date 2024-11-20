@@ -16,6 +16,7 @@ URL_NOTE_DETAIL = reverse('notes:detail', args=('sample-slug',))
 URL_NOTE_EDIT = reverse('notes:edit', args=('sample-slug',))
 URL_NOTE_DELETE = reverse('notes:delete', args=('sample-slug',))
 
+
 class RoutesTests(TestCase):
     """Тесты для проверки маршрутов."""
 
