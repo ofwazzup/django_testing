@@ -80,7 +80,6 @@ def test_author_can_delete_comment(
     url_comment_delete, comment, author_client
 ):
     """Проверка, что автор комментария может его удалить."""
-    comments_before = comments_before_request()
     comment_id = comment.id
     response = author_client.delete(url_comment_delete)
 
@@ -92,7 +91,6 @@ def test_user_cant_delete_comment_of_another_user(
     url_comment_delete, admin_client, comment
 ):
     """Проверка, что пользователь не может удалить чужой комментарий."""
-    comments_before = comments_before_request()
     response = admin_client.delete(url_comment_delete)
 
     # Проверка, что возвращается ошибка 404, т.к это чужой комментарий
