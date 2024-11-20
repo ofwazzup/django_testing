@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from django.test import TestCase  # Добавлен импорт TestCase
 from django.urls import reverse
 
 from test_utils import setUpTestData
@@ -24,11 +25,15 @@ class RoutesTests(TestCase):
         setUpTestData(cls)
 
     def test_public_and_authenticated_accessibility(self):
-        """Проверка кодов возврата для публичных и аутентифицированных пользователей."""
-        public_urls = [URL_HOME, URL_LOGIN, URL_LOGOUT, URL_SIGNUP]
-        authenticated_urls = [URL_NOTES_LIST, URL_NOTES_ADD, URL_NOTES_SUCCESS]
+        """Проверка кодов возврата для пуб и аут пользователей."""
+        public_urls = [
+            URL_HOME, URL_LOGIN, URL_LOGOUT, URL_SIGNUP
+        ]
+        authenticated_urls = [
+            URL_NOTES_LIST, URL_NOTES_ADD, URL_NOTES_SUCCESS
+        ]
 
-        # Проверка публичных страниц и страниц для аутентифицированных пользователей
+        # Проверка пуб страниц и страниц для аут пользователей
         for url in public_urls + authenticated_urls:
             with self.subTest(url=url):
                 # Выбор клиента для аутентифицированных пользователей
@@ -39,12 +44,8 @@ class RoutesTests(TestCase):
     def test_protected_pages_redirect_and_authorization(self):
         """Проверка редиректов и доступа к защищенным страницам."""
         protected_urls = [
-            URL_NOTE_DETAIL,
-            URL_NOTE_EDIT,
-            URL_NOTE_DELETE,
-            URL_NOTES_ADD,
-            URL_NOTES_SUCCESS,
-            URL_NOTES_LIST,
+            URL_NOTE_DETAIL, URL_NOTE_EDIT, URL_NOTE_DELETE,
+            URL_NOTES_ADD, URL_NOTES_SUCCESS, URL_NOTES_LIST,
         ]
 
         # Проверка редиректов для анонимного пользователя
