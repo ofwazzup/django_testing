@@ -1,4 +1,4 @@
-from .base import (
+from .test_utils import (
     BaseNoteTestCase,
     URL_NOTES_LIST,
     URL_ADD_NOTE,
