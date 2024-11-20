@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from django.test import TestCase
 from django.urls import reverse
-from test_utils import setUpTestData
+from .test_utils import setUpTestData
 from django.contrib.auth import get_user_model
 
 # Константы для URL
