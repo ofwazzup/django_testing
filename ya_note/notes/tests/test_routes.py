@@ -1,49 +1,67 @@
 from http import HTTPStatus
-import pytest
-from pytest_django.asserts import assertRedirects
+from django.test import TestCase
+from django.urls import reverse
+from test_utils import setUpTestData
+from django.contrib.auth import get_user_model
 
-pytestmark = pytest.mark.django_db
+# Константы для URL
+URL_HOME = reverse('notes:home')
+URL_LOGIN = reverse('users:login')
+URL_LOGOUT = reverse('users:logout')
+URL_SIGNUP = reverse('users:signup')
+URL_NOTES_LIST = reverse('notes:list')
+URL_NOTES_ADD = reverse('notes:add')
+URL_NOTES_SUCCESS = reverse('notes:success')
+URL_NOTE_DETAIL = reverse('notes:detail', args=('sample-slug',))
+URL_NOTE_EDIT = reverse('notes:edit', args=('sample-slug',))
+URL_NOTE_DELETE = reverse('notes:delete', args=('sample-slug',))
 
-# Тест для проверки всех кодов ответов
-@pytest.mark.parametrize(
-    'url, client, expected_status',
-    (
-        (pytest.lazy_fixture('url_news_home'), pytest.lazy_fixture('client'), HTTPStatus.OK),
-        (pytest.lazy_fixture('url_user_login'), pytest.lazy_fixture('client'), HTTPStatus.OK),
-        (pytest.lazy_fixture('url_user_logout'), pytest.lazy_fixture('client'), HTTPStatus.OK),
-        (pytest.lazy_fixture('url_user_signup'), pytest.lazy_fixture('client'), HTTPStatus.OK),
-        (pytest.lazy_fixture('url_news_detail'), pytest.lazy_fixture('client'), HTTPStatus.OK),
-        (
-            pytest.lazy_fixture('url_comment_edit'),
-            pytest.lazy_fixture('author_client'), HTTPStatus.OK
-        ),
-        (
-            pytest.lazy_fixture('url_comment_edit'),
-            pytest.lazy_fixture('admin_client'), HTTPStatus.NOT_FOUND
-        ),
-    )
-)
-def test_pages_availability(url, client, expected_status):
-    """Проверяет доступность страниц для разных пользователей и статусы ответов."""
-    response = client.get(url)
-    assert response.status_code == expected_status
 
-# Тест для проверки редиректов
-@pytest.mark.parametrize(
-    'url, expected_redirect_url',
-    (
-        (
-            pytest.lazy_fixture('url_comment_edit'),
-            pytest.lazy_fixture('url_user_login')
-        ),
-        (
-            pytest.lazy_fixture('url_comment_delete'),
-            pytest.lazy_fixture('url_user_login')
-        ),
-    )
-)
-def test_redirects_for_anonymous_user(url, expected_redirect_url, client):
-    """Проверяет редиректы для анонимного пользователя."""
-    expected_url = f'{expected_redirect_url}?next={url}'
-    response = client.get(url)
-    assertRedirects(response, expected_url)
+class RoutesTests(TestCase):
+    """Тесты для проверки маршрутов."""
+
+    @classmethod
+    def setUpTestData(cls):
+        setUpTestData(cls)
+        cls.user = get_user_model().objects.create_user(
+            username='testuser', password='password'
+        )
+
+    def test_public_and_authenticated_accessibility(self):
+        """Проверка кодов возврата для пуб и аут пользователей."""
+        public_urls = [
+            URL_HOME, URL_LOGIN, URL_LOGOUT, URL_SIGNUP
+        ]
+        authenticated_urls = [
+            URL_NOTES_LIST, URL_NOTES_ADD, URL_NOTES_SUCCESS
+        ]
+
+        # Проверка пуб страниц и страниц для аутентифицированных пользователей
+        for url in public_urls + authenticated_urls:
+            with self.subTest(url=url):
+                # Если URL для публичных страниц
+                if url in public_urls:
+                    client = self.client
+                else:
+                    # Логиним клиента перед запросом
+                    self.client.login(
+                        username='testuser', password='password'
+                    )
+                    client = self.client
+
+                response = client.get(url)
+                self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_protected_pages_redirect_and_authorization(self):
+        """Проверка редиректов и доступа к защищенным страницам."""
+        protected_urls = [
+            URL_NOTE_DETAIL, URL_NOTE_EDIT, URL_NOTE_DELETE,
+            URL_NOTES_ADD, URL_NOTES_SUCCESS, URL_NOTES_LIST,
+        ]
+
+        # Проверка редиректов для анонимного пользователя
+        for url in protected_urls:
+            with self.subTest(url=url):
+                redirect_url = f'{URL_LOGIN}?next={url}'
+                response = self.client.get(url)
+                self.assertRedirects(response, redirect_url)
