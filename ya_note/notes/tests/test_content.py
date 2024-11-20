@@ -1,5 +1,3 @@
-from django.test import Client, TestCase
-
 from test_utils import (
     BaseNoteTestCase,
     URL_NOTES_LIST,
@@ -8,7 +6,6 @@ from test_utils import (
 )
 
 from notes.forms import NoteForm
-from notes.models import Note
 
 
 class NoteContentTestCase(BaseNoteTestCase):
