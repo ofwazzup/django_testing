@@ -41,25 +41,18 @@ def test_page_status_codes(
 
 
 @pytest.mark.parametrize(
-    'url, expected_redirect_url',
+    'url_fixture, login_url_fixture',
     (
-        (
-            pytest.lazy_fixture('url_comment_edit'),
-            pytest.lazy_fixture(
-                'url_user_login'
-            ) + '?next=' + pytest.lazy_fixture('url_comment_edit')
-        ),
-        (
-            pytest.lazy_fixture('url_comment_delete'),
-            pytest.lazy_fixture(
-                'url_user_login'
-            ) + '?next=' + pytest.lazy_fixture('url_comment_delete')
-        ),
+        ('url_comment_edit', 'url_user_login'),
+        ('url_comment_delete', 'url_user_login'),
     )
 )
 def test_redirects_for_anonymous_user(
-    url, expected_redirect_url, client
+    url_fixture, login_url_fixture, client, request
 ):
     """Проверяет редирект для анонимного пользователя."""
+    url = request.getfixturevalue(url_fixture)
+    login_url = request.getfixturevalue(login_url_fixture)
+    expected_redirect_url = f'{login_url}?next={url}'
     response = client.get(url)
     assertRedirects(response, expected_redirect_url)
