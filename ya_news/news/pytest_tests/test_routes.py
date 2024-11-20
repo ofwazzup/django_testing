@@ -14,10 +14,22 @@ pytestmark = pytest.mark.django_db
         (pytest.lazy_fixture('url_user_logout'), 'client', HTTPStatus.OK),
         (pytest.lazy_fixture('url_user_signup'), 'client', HTTPStatus.OK),
         (pytest.lazy_fixture('url_news_detail'), 'client', HTTPStatus.OK),
-        (pytest.lazy_fixture('url_comment_edit'), 'author_client', HTTPStatus.OK),
-        (pytest.lazy_fixture('url_comment_delete'), 'author_client', HTTPStatus.OK),
-        (pytest.lazy_fixture('url_comment_edit'), 'admin_client', HTTPStatus.NOT_FOUND),
-        (pytest.lazy_fixture('url_comment_delete'), 'admin_client', HTTPStatus.NOT_FOUND),
+        (
+            pytest.lazy_fixture('url_comment_edit'),
+            'author_client', HTTPStatus.OK
+        ),
+        (
+            pytest.lazy_fixture('url_comment_delete'),
+            'author_client', HTTPStatus.OK
+        ),
+        (
+            pytest.lazy_fixture('url_comment_edit'),
+            'admin_client', HTTPStatus.NOT_FOUND
+        ),
+        (
+            pytest.lazy_fixture('url_comment_delete'),
+            'admin_client', HTTPStatus.NOT_FOUND
+        ),
     )
 )
 def test_page_status_codes(url, client_fixture, expected_status, request):
