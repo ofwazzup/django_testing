@@ -62,7 +62,7 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
 
     def test_create_note_duplicate_slug(self):
         """Нельзя создать заметку с дублирующимся slug."""
-        self.new_note_data['slug'] = SLUG  # Попробуем создать с дублирующим slug
+        self.new_note_data['slug'] = SLUG
         response = self.author_client.post(
             URL_ADD_NOTE, data=self.new_note_data
         )
@@ -133,6 +133,8 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
             author=self.other_user,
         )
         url_edit_note = get_edit_url(another_note.slug)
-        response = self.author_client.post(url_edit_note, data=self.new_note_data)
+        response = self.author_client.post(
+            url_edit_note, data=self.new_note_data
+        )
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
         self.assertEqual(another_note.title, 'Заголовок для редактирования')
