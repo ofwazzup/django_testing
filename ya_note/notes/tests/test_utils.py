@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from notes.models import Note
 
-# Константы с урлами
 URL_NOTES_LIST = reverse('notes:list')
 URL_ADD_NOTE = reverse('notes:add')
 
@@ -12,15 +11,18 @@ URL_ADD_NOTE = reverse('notes:add')
 def get_edit_url(slug):
     return reverse('notes:edit', args=(slug,))
 
-
 class BaseNoteTestCase(TestCase):
     """Базовый класс для тестирования заметок."""
 
     @classmethod
     def setUpTestData(cls):
         """Инициализация тестовых данных."""
-        cls.author = User.objects.create(username='Автор')
-        cls.reader = User.objects.create(username='Читатель')
+        cls.author = User.objects.create(
+            username='Автор'
+        )
+        cls.reader = User.objects.create(
+            username='Читатель'
+        )
         cls.author_client = Client()
         cls.reader_client = Client()
         cls.author_client.force_login(cls.author)
