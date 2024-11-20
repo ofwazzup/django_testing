@@ -13,9 +13,11 @@ pytestmark = pytest.mark.django_db
 NEW_COMMENT_TEXT = 'Новый текст комментария'
 form_data = {'text': NEW_COMMENT_TEXT}
 
+
 def comments_before_request():
     """Возвращает количество комментариев перед выполнением запроса."""
     return Comment.objects.count()
+
 
 def test_anonymous_user_cant_create_comment(url_news_detail, client):
     """Проверка, что анонимный пользователь не может создать комментарий."""
@@ -25,6 +27,7 @@ def test_anonymous_user_cant_create_comment(url_news_detail, client):
 
     # Проверка, что кол-во коммент не изменилось
     assert comments_count == comments_before
+
 
 def test_user_can_create_comment(url_news_detail, admin_client):
     """Проверка, что авторизованный пользователь может создать комментарий."""
@@ -47,6 +50,7 @@ def test_user_can_create_comment(url_news_detail, admin_client):
     # Проверка, что коммент связан с нужной новостью
     assert new_comment.news is not None
 
+
 def test_user_cant_use_bad_words(url_news_detail, admin_client):
     """Проверка отправки запрещенных слов."""
     comments_before = comments_before_request()
@@ -64,6 +68,7 @@ def test_user_cant_use_bad_words(url_news_detail, admin_client):
     # Проверка, что кол-во коммент не изменилось
     assert comments_count == comments_before
 
+
 def test_author_can_delete_comment(url_comment_delete, comment, author_client):
     """Проверка, что автор комментария может его удалить."""
     comment_id = comment.id
@@ -72,7 +77,10 @@ def test_author_can_delete_comment(url_comment_delete, comment, author_client):
     # Проверка, что комментарий был удален
     assert not Comment.objects.filter(id=comment_id).exists()
 
-def test_user_cant_delete_comment_of_another_user(url_comment_delete, admin_client, comment):
+
+def test_user_cant_delete_comment_of_another_user(
+    url_comment_delete, admin_client, comment
+):
     """Проверка, что пользователь не может удалить чужой комментарий."""
     response = admin_client.delete(url_comment_delete)
 
@@ -85,6 +93,7 @@ def test_user_cant_delete_comment_of_another_user(url_comment_delete, admin_clie
     assert comment.author is not None
     assert comment.created is not None
 
+
 def test_author_can_edit_comment(url_comment_edit, comment, author_client):
     """Проверка, что автор комментария может его редактировать."""
     author_client.post(url_comment_edit, data=form_data)
@@ -95,6 +104,7 @@ def test_author_can_edit_comment(url_comment_edit, comment, author_client):
     assert comment.text == NEW_COMMENT_TEXT
     assert comment.author is not None
     assert comment.created is not None
+
 
 def test_user_cant_edit_comment_of_another_user(url_comment_edit, comment, admin_client):
     """Проверка, что пользователь не может редактировать чужой комментарий."""
