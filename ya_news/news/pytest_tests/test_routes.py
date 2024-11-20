@@ -7,25 +7,22 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.mark.parametrize(
-    'url, client, expected_status',
+    'url, client_fixture, expected_status',
     (
         (pytest.lazy_fixture('url_news_home'), 'client', HTTPStatus.OK),
         (pytest.lazy_fixture('url_user_login'), 'client', HTTPStatus.OK),
         (pytest.lazy_fixture('url_user_logout'), 'client', HTTPStatus.OK),
         (pytest.lazy_fixture('url_user_signup'), 'client', HTTPStatus.OK),
         (pytest.lazy_fixture('url_news_detail'), 'client', HTTPStatus.OK),
-        (pytest.lazy_fixture('url_comment_edit'),
-         'author_client', HTTPStatus.OK),
-        (pytest.lazy_fixture('url_comment_delete'),
-         'author_client', HTTPStatus.OK),
-        (pytest.lazy_fixture('url_comment_edit'),
-         'admin_client', HTTPStatus.NOT_FOUND),
-        (pytest.lazy_fixture('url_comment_delete'),
-         'admin_client', HTTPStatus.NOT_FOUND),
+        (pytest.lazy_fixture('url_comment_edit'), 'author_client', HTTPStatus.OK),
+        (pytest.lazy_fixture('url_comment_delete'), 'author_client', HTTPStatus.OK),
+        (pytest.lazy_fixture('url_comment_edit'), 'admin_client', HTTPStatus.NOT_FOUND),
+        (pytest.lazy_fixture('url_comment_delete'), 'admin_client', HTTPStatus.NOT_FOUND),
     )
 )
-def test_page_status_codes(url, client, expected_status):
+def test_page_status_codes(url, client_fixture, expected_status, request):
     """Проверяет код ответа для различных страниц и пользователей."""
+    client = request.getfixturevalue(client_fixture)
     response = client.get(url)
     assert response.status_code == expected_status
 
