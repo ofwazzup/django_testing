@@ -14,18 +14,14 @@ pytestmark = pytest.mark.django_db
         (pytest.lazy_fixture('url_user_logout'), 'client', HTTPStatus.OK),
         (pytest.lazy_fixture('url_user_signup'), 'client', HTTPStatus.OK),
         (pytest.lazy_fixture('url_news_detail'), 'client', HTTPStatus.OK),
-        (pytest.lazy_fixture(
-            'url_comment_edit'), 'author_client', HTTPStatus.OK
-        ),
-        (pytest.lazy_fixture(
-            'url_comment_delete'), 'author_client', HTTPStatus.OK
-        ),
-        (pytest.lazy_fixture(
-            'url_comment_edit'), 'admin_client', HTTPStatus.NOT_FOUND
-        ),
-        (pytest.lazy_fixture(
-            'url_comment_delete'), 'admin_client', HTTPStatus.NOT_FOUND
-        ),
+        (pytest.lazy_fixture('url_comment_edit'),
+         'author_client', HTTPStatus.OK),
+        (pytest.lazy_fixture('url_comment_delete'),
+         'author_client', HTTPStatus.OK),
+        (pytest.lazy_fixture('url_comment_edit'),
+         'admin_client', HTTPStatus.NOT_FOUND),
+        (pytest.lazy_fixture('url_comment_delete'),
+         'admin_client', HTTPStatus.NOT_FOUND),
     )
 )
 def test_page_status_codes(url, client, expected_status):
@@ -37,12 +33,8 @@ def test_page_status_codes(url, client, expected_status):
 @pytest.mark.parametrize(
     'url, url_user_login',
     (
-        (pytest.lazy_fixture(
-            'url_comment_edit'
-        ), pytest.lazy_fixture('url_user_login')),
-        (pytest.lazy_fixture(
-            'url_comment_delete'
-        ), pytest.lazy_fixture('url_user_login')),
+        (pytest.lazy_fixture('url_comment_edit'), pytest.lazy_fixture('url_user_login')),
+        (pytest.lazy_fixture('url_comment_delete'), pytest.lazy_fixture('url_user_login')),
     )
 )
 def test_redirects_for_anonymous_user(url, url_user_login, client):
