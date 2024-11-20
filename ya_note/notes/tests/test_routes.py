@@ -27,7 +27,7 @@ class RoutesTests(TestCase):
         )
 
     def test_public_and_authenticated_accessibility(self):
-        """Проверка кодов возврата для публичных и аутентифицированных пользователей."""
+        """Проверка кодов возврата для пуб и аут пользователей."""
         public_urls = [
             URL_HOME, URL_LOGIN, URL_LOGOUT, URL_SIGNUP
         ]
@@ -35,7 +35,7 @@ class RoutesTests(TestCase):
             URL_NOTES_LIST, URL_NOTES_ADD, URL_NOTES_SUCCESS
         ]
 
-        # Проверка публичных страниц и страниц для аутентифицированных пользователей
+        # Проверка пуб страниц и страниц для аут пользователей
         for url in public_urls + authenticated_urls:
             with self.subTest(url=url):
                 # Выбор клиента для аутентифицированных пользователей
