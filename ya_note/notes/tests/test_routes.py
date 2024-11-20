@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from django.test import TestCase  # Добавлен импорт TestCase
+from django.test import TestCase
 from django.urls import reverse
 
 from test_utils import setUpTestData
@@ -37,7 +37,11 @@ class RoutesTests(TestCase):
         for url in public_urls + authenticated_urls:
             with self.subTest(url=url):
                 # Выбор клиента для аутентифицированных пользователей
-                client = self.client if url in public_urls else self.reader_client
+                if url in public_urls:
+                    client = self.client
+                else:
+                    client = self.reader_client
+                
                 response = client.get(url)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
