@@ -13,6 +13,7 @@ from .test_utils import (
     URL_SUCCESS_PAGE,
     get_edit_url,
     get_delete_url,
+    SLUG,
 )
 
 
