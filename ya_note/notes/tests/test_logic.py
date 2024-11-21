@@ -37,7 +37,9 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
 
     def test_create_note_authenticated_user(self):
         """Авторизованный пользователь может создавать заметки."""
-        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
         created_note = Note.objects.latest('id')
@@ -56,7 +58,9 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
     def test_create_note_duplicate_slug(self):
         """Нельзя создать заметку с дублирующимся slug."""
         self.new_note_data['slug'] = self.note.slug
-        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         self.assertFormError(
             response,
             'form',
@@ -68,7 +72,9 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
     def test_create_note_empty_slug(self):
         """Если slug не указан, он генерируется автоматически."""
         self.new_note_data.pop('slug')
-        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
         created_note = Note.objects.latest('id')
@@ -77,7 +83,9 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
 
     def test_edit_note_by_author(self):
         """Автор может редактировать свои заметки."""
-        response = self.author_client.post(self.url_edit_note, data=self.new_note_data)
+        response = self.author_client.post(
+            self.url_edit_note, data=self.new_note_data
+        )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count)
         updated_note = Note.objects.get(id=self.note.id)
@@ -87,8 +95,11 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
 
     def test_edit_note_by_other_user(self):
         """Чужой пользователь не может редактировать заметки автора."""
-        response = self.reader_client.post(self.url_edit_note, data=self.new_note_data)
-        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+        response = self.reader_client.post(
+            self.url_edit_note, data=self.new_note_data)
+        self.assertEqual(
+            response.status_code, HTTPStatus.NOT_FOUND
+        )
         unchanged_note = Note.objects.get(id=self.note.id)
         self.assertEqual(unchanged_note.title, self.note.title)
         self.assertEqual(unchanged_note.text, self.note.text)
