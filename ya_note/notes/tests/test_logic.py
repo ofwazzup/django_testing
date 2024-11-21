@@ -5,7 +5,7 @@ from pytils.translit import slugify
 from notes.forms import WARNING
 from notes.models import Note
 from .test_utils import (
-    BaseNoteTestCase,
+    BaseTestCase,
     URL_ADD_NOTE,
     URL_LOGIN,
     URL_SUCCESS_PAGE,
@@ -15,19 +15,12 @@ from .test_utils import (
 )
 
 
-class NoteManagementTestCase(BaseNoteTestCase):
+class NoteManagementTestCase(BaseTestCase):
     """Тесты для проверки операций с заметками."""
 
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.note = None
-        cls.existing_note = Note.objects.create(
-            title='Заголовок',
-            text='Текст заметки',
-            slug=SLUG,
-            author=cls.author_user,
-        )
         cls.new_note_data = {
             'title': 'Новый заголовок',
             'text': 'Новый текст',
