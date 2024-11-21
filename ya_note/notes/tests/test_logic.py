@@ -1,6 +1,5 @@
 from http import HTTPStatus
 
-from django.test import TestCase
 from pytils.translit import slugify
 
 from notes.forms import WARNING
@@ -16,7 +15,7 @@ from .test_utils import (
 )
 
 
-class NoteManagementTestCase(BaseNoteTestCase, TestCase):
+class NoteManagementTestCase(BaseNoteTestCase):
     """Тесты для проверки операций с заметками."""
 
     @classmethod
