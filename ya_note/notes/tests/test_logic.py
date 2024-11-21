@@ -28,7 +28,7 @@ class NoteManagementTestCase(TestCase):
         cls.reader_client = Client()
         cls.author_client.force_login(cls.author_user)
         cls.reader_client.force_login(cls.reader_user)
-        cls.existing_note = Note.objects.create(
+        cls.note = Note.objects.create(
             title='Заголовок',
             text='Текст заметки',
             slug=SLUG,
