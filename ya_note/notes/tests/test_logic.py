@@ -2,7 +2,7 @@ from http import HTTPStatus
 from django.test import TestCase
 from pytils.translit import slugify
 from notes.models import Note
-from test_utils import (
+from .test_utils import (
     URL_ADD_NOTE, URL_LOGIN, URL_SUCCESS_PAGE,
     URL_NOTE_EDIT, URL_NOTE_DELETE, SLUG, BaseNoteTestCase
 )
