@@ -1,6 +1,8 @@
 from http import HTTPStatus
+
 from django.test import TestCase
 from pytils.translit import slugify
+
 from notes.models import Note
 from .test_utils import (
     URL_ADD_NOTE, URL_LOGIN, URL_SUCCESS_PAGE,
@@ -52,7 +54,10 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
             response,
             'form',
             'slug',
-            errors=(SLUG + ' already exists',)  # Используем SLUG
+            errors=(
+                'slug - такой slug уже существует, '
+                'придумайте уникальное значение!',
+            )
         )
         self.assertEqual(Note.objects.count(), self.initial_note_count)
 
