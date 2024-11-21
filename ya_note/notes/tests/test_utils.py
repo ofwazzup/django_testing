@@ -8,7 +8,6 @@ URL_LOGIN = reverse('users:login')
 URL_SUCCESS_PAGE = reverse('notes:success')
 SLUG = 'note-slug'
 URL_NOTES_LIST = reverse('notes:list')
-# Константы для URL
 URL_HOME = reverse('notes:home')
 URL_LOGIN = reverse('users:login')
 URL_LOGOUT = reverse('users:logout')
@@ -27,7 +26,10 @@ URL_NOTE_DELETE = reverse(
 )
 
 
-# Функция для получения URL редактирования заметки
+def get_delete_url(slug):
+    return reverse('notes:delete', args=[slug])
+
+
 def get_edit_url(slug):
     return reverse('notes:edit', args=(slug,))
 
