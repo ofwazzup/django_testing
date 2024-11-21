@@ -1,5 +1,4 @@
 from http import HTTPStatus
-import unittest
 
 from pytils.translit import slugify
 
