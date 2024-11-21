@@ -17,16 +17,6 @@ from .test_utils import (
 class NoteManagementTestCase(BaseTestCase):
     """Тесты для проверки операций с заметками."""
 
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
-        cls.new_note_data = {
-            'title': 'Новый заголовок',
-            'text': 'Новый текст',
-            'slug': 'new-slug',
-        }
-        cls.initial_note_count = Note.objects.count()
-
     def test_create_note_authenticated_user(self):
         """Авторизованный пользователь может создавать заметки."""
         response = self.author_client.post(
