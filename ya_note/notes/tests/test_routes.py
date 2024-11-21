@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from django.urls import reverse
 from .test_utils import (
     BaseNoteTestCase,
     URL_HOME,
