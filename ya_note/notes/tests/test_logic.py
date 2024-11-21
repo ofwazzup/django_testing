@@ -1,6 +1,4 @@
 from http import HTTPStatus
-from django.test import Client
-from django.contrib.auth.models import User
 
 from pytils.translit import slugify
 
