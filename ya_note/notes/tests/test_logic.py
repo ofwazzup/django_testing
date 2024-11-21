@@ -38,8 +38,11 @@ class NoteManagementTestCase(BaseNoteTestCase):
             Note.objects.count(), self.initial_note_count + 1
         )
 
-        # Используем разность множеств для поиска созданной заметки
-        created_note = Note.objects.exclude(id=self.note.id).get()
+        created_note = Note.objects.exclude(
+            id__in=Note.objects.filter(
+                slug=self.note.slug
+            ).values_list('id', flat=True)
+        ).get()
         self.assertEqual(created_note.title, self.new_note_data['title'])
         self.assertEqual(created_note.text, self.new_note_data['text'])
         self.assertEqual(created_note.slug, self.new_note_data['slug'])
