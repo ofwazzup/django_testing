@@ -1,12 +1,11 @@
 from http import HTTPStatus
 from django.test import Client, TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
 from pytils.translit import slugify
 from notes.models import Note
 from test_utils import (
     URL_ADD_NOTE, URL_LOGIN, URL_SUCCESS_PAGE,
-    URL_NOTE_EDIT, URL_NOTE_DELETE, SLUG
+    URL_NOTE_EDIT, URL_NOTE_DELETE, SLUG, BaseNoteTestCase
 )
 
 
@@ -44,10 +43,13 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
 
     def test_create_note_duplicate_slug(self):
         """Нельзя создать заметку с дублирующимся slug."""
-        self.new_note_data['slug'] = self.note.slug
+        self.new_note_data['slug'] = SLUG  # Вернули использование SLUG
         response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
         self.assertFormError(
-            response, 'form', 'slug', errors=(self.note.slug + WARNING)
+            response,
+            'form',
+            'slug',
+            errors=(SLUG + ' already exists',)  # Используем SLUG
         )
         self.assertEqual(Note.objects.count(), self.initial_note_count)
 
