@@ -1,25 +1,19 @@
 from http import HTTPStatus
 from django.urls import reverse
-from .test_utils import BaseNoteTestCase
+from .test_utils import (
+    BaseNoteTestCase,
+    URL_HOME,
+    URL_LOGIN,
+    URL_LOGOUT,
+    URL_SIGNUP,
+    URL_NOTES_LIST,
+    URL_NOTES_ADD,
+    URL_NOTES_SUCCESS,
+    URL_NOTE_DETAIL,
+    URL_NOTE_EDIT,
+    URL_NOTE_DELETE,
+)
 from django.contrib.auth import get_user_model
-
-# Константы для URL
-URL_HOME = reverse('notes:home')
-URL_LOGIN = reverse('users:login')
-URL_LOGOUT = reverse('users:logout')
-URL_SIGNUP = reverse('users:signup')
-URL_NOTES_LIST = reverse('notes:list')
-URL_NOTES_ADD = reverse('notes:add')
-URL_NOTES_SUCCESS = reverse('notes:success')
-URL_NOTE_DETAIL = reverse(
-    'notes:detail', args=('sample-slug',)
-)
-URL_NOTE_EDIT = reverse(
-    'notes:edit', args=('sample-slug',)
-)
-URL_NOTE_DELETE = reverse(
-    'notes:delete', args=('sample-slug',)
-)
 
 
 class RoutesTests(BaseNoteTestCase):
