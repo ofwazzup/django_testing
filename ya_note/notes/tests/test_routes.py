@@ -7,7 +7,7 @@ from .test_utils import (
     URL_SIGNUP,
     URL_NOTES_LIST,
     URL_ADD_NOTE,
-    URL_NOTES_SUCCESS,
+    URL_SUCCESS_PAGE,
     URL_NOTE_DETAIL,
     URL_NOTE_EDIT,
     URL_NOTE_DELETE,
@@ -31,7 +31,7 @@ class RoutesTests(BaseNoteTestCase):
             URL_HOME, URL_LOGIN, URL_LOGOUT, URL_SIGNUP
         ]
         authenticated_urls = [
-            URL_NOTES_LIST, URL_ADD_NOTE, URL_NOTES_SUCCESS
+            URL_NOTES_LIST, URL_ADD_NOTE, URL_SUCCESS_PAGE
         ]
 
         # Проверка пуб страниц и страниц для аут пользователей
@@ -56,7 +56,7 @@ class RoutesTests(BaseNoteTestCase):
         """Проверка редиректов и доступа к защищенным страницам."""
         protected_urls = [
             URL_NOTE_DETAIL, URL_NOTE_EDIT, URL_NOTE_DELETE,
-            URL_ADD_NOTE, URL_NOTES_SUCCESS, URL_NOTES_LIST,
+            URL_ADD_NOTE, URL_SUCCESS_PAGE, URL_NOTES_LIST,
         ]
 
         # Проверка редиректов для анонимного пользователя
