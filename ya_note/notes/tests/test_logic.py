@@ -22,7 +22,8 @@ class NoteManagementTestCase(BaseNoteTestCase):
 
     @classmethod
     def setUpTestData(cls):
-        super().setUpTestData(create_note=False)
+        super().setUpTestData()
+        cls.note = None
         cls.existing_note = Note.objects.create(
             title='Заголовок',
             text='Текст заметки',
