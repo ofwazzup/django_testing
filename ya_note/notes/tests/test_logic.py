@@ -1,7 +1,6 @@
 from http import HTTPStatus
-
-from django.contrib.auth.models import User
 from django.test import Client, TestCase
+from django.contrib.auth.models import User
 
 from pytils.translit import slugify
 
@@ -23,8 +22,8 @@ class NoteManagementTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Инициализация тестовых данных."""
-        cls.author = User.objects.create(username='Автор')
-        cls.reader = User.objects.create(username='Читатель')
+        cls.author_user = User.objects.create(username='Автор')
+        cls.reader_user = User.objects.create(username='Читатель')
         cls.author_client = Client()
         cls.reader_client = Client()
         cls.author_client.force_login(cls.author_user)
