@@ -47,6 +47,6 @@ class BaseNoteTestCase:
         cls.note = Note.objects.create(
             title='Заголовок',
             text='Текст заметки',
-            slug='note-slug',
+            slug=SLUG,
             author=cls.author,
         )
