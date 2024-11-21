@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.test import Client
+from django.test import Client, TestCase
 from notes.models import Note
 from django.urls import reverse
 
@@ -32,7 +32,7 @@ def get_delete_url(slug):
 
 
 # Базовый класс для тестирования
-class BaseNoteTestCase:
+class BaseNoteTestCase(TestCase):
     """Базовый класс для тестирования заметок."""
 
     @classmethod
