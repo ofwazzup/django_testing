@@ -20,6 +20,7 @@ URL_NOTE_EDIT = reverse(
 URL_NOTE_DELETE = reverse(
     'notes:delete', args=('sample-slug',)
 )
+SLUG = 'note-slug'
 
 
 def get_delete_url(slug):
