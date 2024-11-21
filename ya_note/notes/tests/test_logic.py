@@ -1,4 +1,6 @@
 from http import HTTPStatus
+from django.test import Client, TestCase
+from django.contrib.auth.models import User
 
 from pytils.translit import slugify
 
@@ -15,18 +17,23 @@ from .test_utils import (
 )
 
 
-class NoteManagementTestCase(BaseNoteTestCase):
+class NoteManagementTestCase(TestCase):
     """Тесты для проверки операций с заметками."""
 
     @classmethod
     def setUpTestData(cls):
         """Инициализация тестовых данных."""
-        super().setUpTestData()
+        cls.author_user = User.objects.create(username='Автор')
+        cls.reader_user = User.objects.create(username='Читатель')
+        cls.author_client = Client()
+        cls.reader_client = Client()
+        cls.author_client.force_login(cls.author_user)
+        cls.reader_client.force_login(cls.reader_user)
         cls.existing_note = Note.objects.create(
             title='Заголовок',
             text='Текст заметки',
             slug=SLUG,
-            author=cls.author,
+            author=cls.author_user,
         )
         cls.new_note_data = {
             'title': 'Новый заголовок',
@@ -37,20 +44,24 @@ class NoteManagementTestCase(BaseNoteTestCase):
 
     def test_create_note_authenticated_user(self):
         """Авторизованный пользователь может создавать заметки."""
-        # Убедитесь, что пользователь авторизован
-        self.client.login(username=self.author.username, password='password')
-        response = self.client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
-        self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
+        self.assertEqual(
+            Note.objects.count(), self.initial_note_count + 1
+        )
         created_note = Note.objects.latest('id')
         self.assertEqual(created_note.title, self.new_note_data['title'])
         self.assertEqual(created_note.text, self.new_note_data['text'])
         self.assertEqual(created_note.slug, self.new_note_data['slug'])
-        self.assertEqual(created_note.author, self.author)
+        self.assertEqual(created_note.author, self.author_user)
 
     def test_create_note_anonymous_user(self):
         """Анонимный пользователь не может создавать заметки."""
-        response = self.client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         expected_redirect_url = f'{URL_LOGIN}?next={URL_ADD_NOTE}'
         self.assertRedirects(response, expected_redirect_url)
         self.assertEqual(Note.objects.count(), self.initial_note_count)
@@ -58,9 +69,9 @@ class NoteManagementTestCase(BaseNoteTestCase):
     def test_create_note_duplicate_slug(self):
         """Нельзя создать заметку с дублирующимся slug."""
         self.new_note_data['slug'] = self.existing_note.slug
-        # Убедитесь, что пользователь авторизован
-        self.client.login(username=self.author.username, password='password')
-        response = self.client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         self.assertFormError(
             response,
             'form',
@@ -72,9 +83,9 @@ class NoteManagementTestCase(BaseNoteTestCase):
     def test_create_note_empty_slug(self):
         """Если slug не указан, он генерируется автоматически."""
         self.new_note_data.pop('slug')
-        # Убедитесь, что пользователь авторизован
-        self.client.login(username=self.author.username, password='password')
-        response = self.client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
         created_note = Note.objects.latest('id')
@@ -83,9 +94,7 @@ class NoteManagementTestCase(BaseNoteTestCase):
 
     def test_edit_note_by_author(self):
         """Автор может редактировать свои заметки."""
-        # Убедитесь, что пользователь авторизован
-        self.client.login(username=self.author.username, password='password')
-        response = self.client.post(
+        response = self.author_client.post(
             get_edit_url(self.existing_note.slug), data=self.new_note_data
         )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
@@ -97,8 +106,7 @@ class NoteManagementTestCase(BaseNoteTestCase):
 
     def test_edit_note_by_other_user(self):
         """Чужой пользователь не может редактировать заметки автора."""
-        self.client.login(username=self.reader.username, password='password')
-        response = self.client.post(
+        response = self.reader_client.post(
             get_edit_url(self.existing_note.slug), data=self.new_note_data
         )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
@@ -109,15 +117,16 @@ class NoteManagementTestCase(BaseNoteTestCase):
 
     def test_delete_note_by_author(self):
         """Автор может удалять свои заметки."""
-        # Убедитесь, что пользователь авторизован
-        self.client.login(username=self.author.username, password='password')
-        response = self.client.post(get_delete_url(self.existing_note.slug))
+        response = self.author_client.post(
+            get_delete_url(self.existing_note.slug)
+        )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count - 1)
 
     def test_delete_note_by_other_user(self):
         """Чужой пользователь не может удалять заметки автора."""
-        self.client.login(username=self.reader.username, password='password')
-        response = self.client.post(get_delete_url(self.existing_note.slug))
+        response = self.reader_client.post(
+            get_delete_url(self.existing_note.slug)
+        )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         self.assertEqual(Note.objects.count(), self.initial_note_count)
