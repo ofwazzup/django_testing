@@ -1,6 +1,7 @@
 from http import HTTPStatus
-from django.test import Client
+
 from pytils.translit import slugify
+
 from notes.forms import WARNING
 from notes.models import Note
 from .test_utils import (
@@ -51,7 +52,9 @@ class NoteManagementTestCase(BaseNoteTestCase):
     def test_create_note_duplicate_slug(self):
         """Нельзя создать заметку с дублирующимся slug."""
         self.new_note_data['slug'] = self.note.slug
-        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         self.assertFormError(
             response,
             'form',
@@ -63,7 +66,9 @@ class NoteManagementTestCase(BaseNoteTestCase):
     def test_create_note_empty_slug(self):
         """Если slug не указан, он генерируется автоматически."""
         self.new_note_data.pop('slug')
-        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
 
