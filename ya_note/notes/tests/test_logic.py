@@ -1,11 +1,13 @@
 from http import HTTPStatus
 
+from django.contrib.auth.models import User
+from django.test import Client, TestCase
+
 from pytils.translit import slugify
 
 from notes.forms import WARNING
 from notes.models import Note
 from .test_utils import (
-    BaseTestCase,
     URL_ADD_NOTE,
     URL_LOGIN,
     URL_SUCCESS_PAGE,
@@ -14,8 +16,30 @@ from .test_utils import (
 )
 
 
-class NoteManagementTestCase(BaseTestCase):
+class NoteManagementTestCase(TestCase):
     """Тесты для проверки операций с заметками."""
+
+    @classmethod
+    def setUpTestData(cls):
+        """Инициализация тестовых данных."""
+        cls.author = User.objects.create(username='Автор')
+        cls.reader = User.objects.create(username='Читатель')
+        cls.author_client = Client()
+        cls.reader_client = Client()
+        cls.author_client.force_login(cls.author_user)
+        cls.reader_client.force_login(cls.reader_user)
+        cls.existing_note = Note.objects.create(
+            title='Заголовок',
+            text='Текст заметки',
+            slug=SLUG,
+            author=cls.author_user,
+        )
+        cls.new_note_data = {
+            'title': 'Новый заголовок',
+            'text': 'Новый текст',
+            'slug': 'new-slug',
+        }
+        cls.initial_note_count = Note.objects.count()
 
     def test_create_note_authenticated_user(self):
         """Авторизованный пользователь может создавать заметки."""
