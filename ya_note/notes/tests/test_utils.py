@@ -44,9 +44,10 @@ class BaseNoteTestCase(TestCase):
         cls.reader_client = Client()
         cls.author_client.force_login(cls.author)
         cls.reader_client.force_login(cls.reader)
-        cls.note = Note.objects.create(
-            title='Заголовок',
-            text='Текст заметки',
-            slug='new-slug',
-            author=cls.author,
-        )
+        if create_note:
+            cls.note = Note.objects.create(
+                title='Заголовок',
+                text='Текст заметки',
+                slug='new-slug',
+                author=cls.author,
+            )
