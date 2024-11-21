@@ -1,18 +1,19 @@
 from http import HTTPStatus
 from django.test import Client, TestCase
 from django.contrib.auth.models import User
+
 from pytils.translit import slugify
+
 from notes.forms import WARNING
 from notes.models import Note
 from test_utils import (
     URL_ADD_NOTE,
     URL_LOGIN,
     URL_SUCCESS_PAGE,
-    URL_EDIT_NOTE,
-    URL_DELETE_NOTE
+    get_edit_url,
+    get_delete_url,
+    SLUG,
 )
-
-SLUG = 'note-slug'
 
 
 class NoteManagementTestCase(TestCase):
@@ -93,7 +94,7 @@ class NoteManagementTestCase(TestCase):
     def test_edit_note_by_author(self):
         """Автор может редактировать свои заметки."""
         response = self.author_client.post(
-            URL_EDIT_NOTE(self.existing_note.slug), data=self.new_note_data
+            get_edit_url(self.existing_note.slug), data=self.new_note_data
         )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count)
@@ -105,7 +106,7 @@ class NoteManagementTestCase(TestCase):
     def test_edit_note_by_other_user(self):
         """Чужой пользователь не может редактировать заметки автора."""
         response = self.reader_client.post(
-            URL_EDIT_NOTE(self.existing_note.slug), data=self.new_note_data
+            get_edit_url(self.existing_note.slug), data=self.new_note_data
         )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         unchanged_note = Note.objects.get(id=self.existing_note.id)
@@ -116,7 +117,7 @@ class NoteManagementTestCase(TestCase):
     def test_delete_note_by_author(self):
         """Автор может удалять свои заметки."""
         response = self.author_client.post(
-            URL_DELETE_NOTE(self.existing_note.slug)
+            get_delete_url(self.existing_note.slug)
         )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count - 1)
@@ -124,7 +125,7 @@ class NoteManagementTestCase(TestCase):
     def test_delete_note_by_other_user(self):
         """Чужой пользователь не может удалять заметки автора."""
         response = self.reader_client.post(
-            URL_DELETE_NOTE(self.existing_note.slug)
+            get_delete_url(self.existing_note.slug)
         )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         self.assertEqual(Note.objects.count(), self.initial_note_count)
