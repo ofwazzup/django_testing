@@ -16,6 +16,7 @@ from .test_utils import (
     SLUG,
 )
 
+
 class NoteManagementTestCase(BaseNoteTestCase):
     """Тесты для проверки операций с заметками."""
 
