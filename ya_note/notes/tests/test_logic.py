@@ -1,7 +1,7 @@
 from http import HTTPStatus
-from django.test import Client
-from django.contrib.auth.models import User
+
 from pytils.translit import slugify
+
 from notes.forms import WARNING
 from notes.models import Note
 from .test_utils import (
@@ -11,7 +11,6 @@ from .test_utils import (
     URL_SUCCESS_PAGE,
     get_edit_url,
     get_delete_url,
-    SLUG,
 )
 
 
