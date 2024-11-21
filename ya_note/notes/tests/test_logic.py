@@ -1,7 +1,6 @@
 from http import HTTPStatus
-
+from django.test import Client
 from pytils.translit import slugify
-
 from notes.forms import WARNING
 from notes.models import Note
 from .test_utils import (
@@ -19,7 +18,7 @@ class NoteManagementTestCase(BaseNoteTestCase):
 
     @classmethod
     def setUpTestData(cls):
-        """Инициализация дополнительных тестовых данных."""
+        """Инициализация тестовых данных."""
         super().setUpTestData()
         cls.new_note_data = {
             'title': 'Новый заголовок',
@@ -34,15 +33,9 @@ class NoteManagementTestCase(BaseNoteTestCase):
             URL_ADD_NOTE, data=self.new_note_data
         )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
-        self.assertEqual(
-            Note.objects.count(), self.initial_note_count + 1
-        )
+        self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
 
-        created_note = Note.objects.exclude(
-            id__in=Note.objects.filter(
-                slug=self.note.slug
-            ).values_list('id', flat=True)
-        ).get()
+        created_note = Note.objects.exclude(id=self.note.id).get()
         self.assertEqual(created_note.title, self.new_note_data['title'])
         self.assertEqual(created_note.text, self.new_note_data['text'])
         self.assertEqual(created_note.slug, self.new_note_data['slug'])
@@ -58,9 +51,7 @@ class NoteManagementTestCase(BaseNoteTestCase):
     def test_create_note_duplicate_slug(self):
         """Нельзя создать заметку с дублирующимся slug."""
         self.new_note_data['slug'] = self.note.slug
-        response = self.author_client.post(
-            URL_ADD_NOTE, data=self.new_note_data
-        )
+        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
         self.assertFormError(
             response,
             'form',
@@ -72,9 +63,7 @@ class NoteManagementTestCase(BaseNoteTestCase):
     def test_create_note_empty_slug(self):
         """Если slug не указан, он генерируется автоматически."""
         self.new_note_data.pop('slug')
-        response = self.author_client.post(
-            URL_ADD_NOTE, data=self.new_note_data
-        )
+        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
 
