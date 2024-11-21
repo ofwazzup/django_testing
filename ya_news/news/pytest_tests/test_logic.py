@@ -56,7 +56,9 @@ def test_author_can_delete_comment(url_comment_delete, comment, author_client):
     assert not Comment.objects.filter(id=comment.id).exists()
 
 
-def test_user_cant_delete_comment_of_another_user(url_comment_delete, admin_client, comment):
+def test_user_cant_delete_comment_of_another_user(
+    url_comment_delete, admin_client, comment
+):
     """Пользователь не может удалить чужой комментарий."""
     response = admin_client.delete(url_comment_delete)
     assert response.status_code == HTTPStatus.NOT_FOUND
@@ -75,7 +77,9 @@ def test_author_can_edit_comment(url_comment_edit, comment, author_client):
     assert comment.created is not None
 
 
-def test_user_cant_edit_comment_of_another_user(url_comment_edit, comment, admin_client):
+def test_user_cant_edit_comment_of_another_user(
+    url_comment_edit, comment, admin_client
+):
     """Пользователь не может редактировать чужой комментарий."""
     response = admin_client.post(url_comment_edit, data=form_data)
 
