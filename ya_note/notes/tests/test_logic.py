@@ -36,10 +36,14 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
 
     def test_create_note_authenticated_user(self):
         """Авторизованный пользователь может создавать заметки."""
+        # Проверка редиректа
         response = self.author_client.post(
             URL_ADD_NOTE, data=self.new_note_data
         )
+
         self.assertRedirects(response, URL_SUCCESS_PAGE)
+
+        # Проверяем, что заметка была создана
         self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
         created_note = Note.objects.latest('id')
         self.assertEqual(created_note.title, self.new_note_data['title'])
@@ -75,7 +79,9 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
             URL_ADD_NOTE, data=self.new_note_data
         )
         self.assertRedirects(response, URL_SUCCESS_PAGE)
-        self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
+        self.assertEqual(
+            Note.objects.count(), self.initial_note_count + 1
+        )
         created_note = Note.objects.latest('id')
         expected_slug = slugify(self.new_note_data['title'])
         self.assertEqual(created_note.slug, expected_slug)
@@ -95,7 +101,8 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
     def test_edit_note_by_other_user(self):
         """Чужой пользователь не может редактировать заметки автора."""
         response = self.reader_client.post(
-            self.url_edit_note, data=self.new_note_data)
+            self.url_edit_note, data=self.new_note_data
+        )
         self.assertEqual(
             response.status_code, HTTPStatus.NOT_FOUND
         )
