@@ -4,9 +4,14 @@ from django.contrib.auth.models import User
 from pytils.translit import slugify
 from notes.forms import WARNING
 from notes.models import Note
-from test_utils import URL_ADD_NOTE, URL_LOGIN, URL_SUCCESS_PAGE, URL_EDIT_NOTE, URL_DELETE_NOTE
+from test_utils import (
+    URL_ADD_NOTE,
+    URL_LOGIN,
+    URL_SUCCESS_PAGE,
+    URL_EDIT_NOTE,
+    URL_DELETE_NOTE
+)
 
-# Константа для slug
 SLUG = 'note-slug'
 
 
