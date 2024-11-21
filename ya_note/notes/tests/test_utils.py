@@ -4,12 +4,6 @@ from notes.models import Note
 from django.urls import reverse
 
 # Константы для URL
-URL_EDIT_NOTE = lambda slug: reverse(
-    'notes:edit', args=[slug]
-)
-URL_DELETE_NOTE = lambda slug: reverse(
-    'notes:delete', args=[slug]
-)
 URL_ADD_NOTE = reverse('notes:add')
 URL_LOGIN = reverse('users:login')
 URL_SUCCESS_PAGE = reverse('notes:success')
@@ -30,7 +24,11 @@ SLUG = 'note-slug'
 
 
 def get_edit_url(slug):
-    return reverse('notes:edit', args=(slug,))
+    return reverse('notes:edit', args=[slug])
+
+
+def get_delete_url(slug):
+    return reverse('notes:delete', args=[slug])
 
 
 # Базовый класс для тестирования
