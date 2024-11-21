@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from django.test import Client, TestCase
+from django.test import Client
 from django.contrib.auth.models import User
 
 from pytils.translit import slugify
@@ -7,6 +7,7 @@ from pytils.translit import slugify
 from notes.forms import WARNING
 from notes.models import Note
 from .test_utils import (
+    BaseNoteTestCase,
     URL_ADD_NOTE,
     URL_LOGIN,
     URL_SUCCESS_PAGE,
@@ -16,18 +17,12 @@ from .test_utils import (
 )
 
 
-class NoteManagementTestCase(TestCase):
+class NoteManagementTestCase(BaseNoteTestCase):
     """Тесты для проверки операций с заметками."""
 
     @classmethod
     def setUpTestData(cls):
-        """Инициализация тестовых данных."""
-        cls.author_user = User.objects.create(username='Автор')
-        cls.reader_user = User.objects.create(username='Читатель')
-        cls.author_client = Client()
-        cls.reader_client = Client()
-        cls.author_client.force_login(cls.author_user)
-        cls.reader_client.force_login(cls.reader_user)
+        super().setUpTestData(create_note=False)
         cls.existing_note = Note.objects.create(
             title='Заголовок',
             text='Текст заметки',
