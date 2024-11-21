@@ -36,15 +36,20 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
 
     def test_create_note_authenticated_user(self):
         """Авторизованный пользователь может создавать заметки."""
-        # Проверка редиректа
+        self.author_client.force_login(self.author)
+    
+        # Отправляем POST запрос
         response = self.author_client.post(
             URL_ADD_NOTE, data=self.new_note_data
         )
-
+    
+        # Ожидаемый редирект после создания
         self.assertRedirects(response, URL_SUCCESS_PAGE)
-
-        # Проверяем, что заметка была создана
+    
+        # Проверяем, что количество увеличилось
         self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
+    
+        # Проверяем созданную
         created_note = Note.objects.latest('id')
         self.assertEqual(created_note.title, self.new_note_data['title'])
         self.assertEqual(created_note.text, self.new_note_data['text'])
