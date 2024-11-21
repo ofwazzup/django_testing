@@ -1,5 +1,4 @@
 from http import HTTPStatus
-
 from django.test import TestCase
 from pytils.translit import slugify
 
@@ -47,7 +46,9 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
         self.assertRedirects(response, URL_SUCCESS_PAGE)
 
         # Проверяем, что количество увеличилось
-        self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
+        self.assertEqual(
+            Note.objects.count(), self.initial_note_count + 1
+        )
 
         # Проверяем созданную
         created_note = Note.objects.latest('id')
