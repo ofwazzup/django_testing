@@ -6,7 +6,7 @@ from .test_utils import (
     URL_LOGOUT,
     URL_SIGNUP,
     URL_NOTES_LIST,
-    URL_NOTES_ADD,
+    URL_ADD_NOTE,
     URL_NOTES_SUCCESS,
     URL_NOTE_DETAIL,
     URL_NOTE_EDIT,
