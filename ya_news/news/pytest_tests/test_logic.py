@@ -23,7 +23,7 @@ def test_user_can_create_comment(
     url_news_detail, admin_client, admin_user
 ):
     """Авторизованный пользователь может создать комментарий."""
-    Comment.objects.all().delete()  # Удаляем все комментарии перед тестом
+    Comment.objects.all().delete()
     response = admin_client.post(url_news_detail, data=form_data)
 
     assert response.status_code == HTTPStatus.OK
