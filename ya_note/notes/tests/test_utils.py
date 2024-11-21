@@ -71,3 +71,9 @@ class BaseTestCase(TestCase):
             slug=SLUG,
             author=cls.author_user,
         )
+        cls.new_note_data = {
+            'title': 'Новый заголовок',
+            'text': 'Новый текст',
+            'slug': 'new-slug',
+        }
+        cls.initial_note_count = Note.objects.count()
