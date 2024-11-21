@@ -26,7 +26,7 @@ class NoteManagementTestCase(BaseNoteTestCase):
             title='Заголовок',
             text='Текст заметки',
             slug=SLUG,
-            author=cls.author,
+            author=cls.author_user,
         )
         cls.new_note_data = {
             'title': 'Новый заголовок',
@@ -48,7 +48,7 @@ class NoteManagementTestCase(BaseNoteTestCase):
         self.assertEqual(created_note.title, self.new_note_data['title'])
         self.assertEqual(created_note.text, self.new_note_data['text'])
         self.assertEqual(created_note.slug, self.new_note_data['slug'])
-        self.assertEqual(created_note.author, self.author)
+        self.assertEqual(created_note.author, self.author_user)
 
     def test_create_note_anonymous_user(self):
         """Анонимный пользователь не может создавать заметки."""
