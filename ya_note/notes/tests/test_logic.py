@@ -26,7 +26,7 @@ class NoteManagementTestCase(BaseNoteTestCase):
             title='Заголовок',
             text='Текст заметки',
             slug=SLUG,
-            author=cls.author_user,
+            author=cls.author,
         )
         cls.new_note_data = {
             'title': 'Новый заголовок',
