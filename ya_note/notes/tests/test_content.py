@@ -8,7 +8,7 @@ from .test_utils import (
 from notes.forms import NoteForm
 
 
-class NoteContentTestCase(BaseNoteTestCase):  # Наследуемся от BaseNoteTestCase
+class NoteContentTestCase(BaseNoteTestCase):
     """Тесты для проверки контента и форм на страницах приложения."""
 
     def test_notes_list_visibility_for_users(self):
