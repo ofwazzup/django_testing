@@ -1,5 +1,7 @@
 from http import HTTPStatus
+
 from pytils.translit import slugify
+
 from notes.forms import WARNING
 from notes.models import Note
 from .test_utils import (
