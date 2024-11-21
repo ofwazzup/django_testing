@@ -55,7 +55,7 @@ class NoteManagementTestCase(BaseNoteTestCase, TestCase):
             'form',
             'slug',
             errors=(
-                'slug - такой slug уже существует, '
+                'note-slug - такой slug уже существует, '
                 'придумайте уникальное значение!',
             )
         )
