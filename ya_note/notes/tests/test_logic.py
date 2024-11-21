@@ -29,7 +29,9 @@ class NoteManagementTestCase(BaseNoteTestCase):
 
     def test_create_note_authenticated_user(self):
         """Авторизованный пользователь может создавать заметки."""
-        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
 
         # Проверяем редирект
         self.assertRedirects(response, URL_SUCCESS_PAGE)
@@ -39,7 +41,9 @@ class NoteManagementTestCase(BaseNoteTestCase):
 
         # Ищем новую заметку, исключая существующие до теста
         created_note = Note.objects.exclude(
-            id__in=Note.objects.values_list('id', flat=True)[:self.initial_note_count]
+            id__in=Note.objects.values_list(
+                'id', flat=True
+            )[:self.initial_note_count]
         ).get()
 
         # Проверяем, что данные заметки совпадают с ожидаемыми
@@ -61,7 +65,9 @@ class NoteManagementTestCase(BaseNoteTestCase):
         """Нельзя создать заметку с дублирующимся slug."""
         self.new_note_data['slug'] = self.existing_note.slug
 
-        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
 
         self.assertFormError(
             response,
@@ -75,13 +81,17 @@ class NoteManagementTestCase(BaseNoteTestCase):
         """Если slug не указан, он генерируется автоматически."""
         self.new_note_data.pop('slug')
 
-        response = self.author_client.post(URL_ADD_NOTE, data=self.new_note_data)
+        response = self.author_client.post(
+            URL_ADD_NOTE, data=self.new_note_data
+        )
 
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count + 1)
 
         created_note = Note.objects.exclude(
-            id__in=Note.objects.values_list('id', flat=True)[:self.initial_note_count]
+            id__in=Note.objects.values_list(
+                'id', flat=True
+            )[:self.initial_note_count]
         ).get()
         expected_slug = slugify(self.new_note_data['title'])
         self.assertEqual(created_note.slug, expected_slug)
@@ -115,14 +125,18 @@ class NoteManagementTestCase(BaseNoteTestCase):
 
     def test_delete_note_by_author(self):
         """Автор может удалять свои заметки."""
-        response = self.author_client.post(get_delete_url(self.existing_note.slug))
+        response = self.author_client.post(
+            get_delete_url(self.existing_note.slug)
+        )
 
         self.assertRedirects(response, URL_SUCCESS_PAGE)
         self.assertEqual(Note.objects.count(), self.initial_note_count - 1)
 
     def test_delete_note_by_other_user(self):
         """Чужой пользователь не может удалять заметки автора."""
-        response = self.reader_client.post(get_delete_url(self.existing_note.slug))
+        response = self.reader_client.post(
+            get_delete_url(self.existing_note.slug)
+        )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         self.assertEqual(Note.objects.count(), self.initial_note_count)
