@@ -8,6 +8,23 @@ URL_LOGIN = reverse('users:login')
 URL_SUCCESS_PAGE = reverse('notes:success')
 SLUG = 'note-slug'
 URL_NOTES_LIST = reverse('notes:list')
+# Константы для URL
+URL_HOME = reverse('notes:home')
+URL_LOGIN = reverse('users:login')
+URL_LOGOUT = reverse('users:logout')
+URL_SIGNUP = reverse('users:signup')
+URL_NOTES_LIST = reverse('notes:list')
+URL_NOTES_ADD = reverse('notes:add')
+URL_NOTES_SUCCESS = reverse('notes:success')
+URL_NOTE_DETAIL = reverse(
+    'notes:detail', args=('sample-slug',)
+)
+URL_NOTE_EDIT = reverse(
+    'notes:edit', args=('sample-slug',)
+)
+URL_NOTE_DELETE = reverse(
+    'notes:delete', args=('sample-slug',)
+)
 
 
 # Функция для получения URL редактирования заметки
